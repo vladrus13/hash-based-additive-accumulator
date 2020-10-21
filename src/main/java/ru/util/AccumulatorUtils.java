@@ -1,7 +1,7 @@
 package ru.util;
 
 public class AccumulatorUtils {
-    protected long d(long n) {
+    protected static long d(long n) {
         if (n == 0) {
             return 0;
         } else {
@@ -9,7 +9,7 @@ public class AccumulatorUtils {
         }
     }
 
-    protected int zeros(long n) {
+    protected static int zeros(long n) {
         if (n == 0) {
             return 0;
         } else {
@@ -21,11 +21,11 @@ public class AccumulatorUtils {
         }
     }
 
-    protected long pred(long n) {
+    protected static long pred(long n) {
         return n - zeros(n);
     }
 
-    protected long pred(int t, long n) {
+    protected static long pred(int t, long n) {
         if (t == 1) {
             return pred(n);
         } else {
@@ -33,9 +33,8 @@ public class AccumulatorUtils {
         }
     }
 
-    protected long rpred(int i, long n) {
-        //TODO: CHECK THIS SHIT
-        //????????????????????????????????????????????????????????????????????
+    protected static long rpred(int i, long n) {
+        //TODO: check realization
         int count = 0;
         for (long cur = 1; cur <= i; cur *= 2) {
             if ((i & cur) > 0) {
