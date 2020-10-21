@@ -1,35 +1,36 @@
 package ru.util;
 
+import java.util.BitSet;
+
 public class AccumulatorUtils {
-    protected static long d(long n) {
-        if (n == 0) {
-            return 0;
+    protected static BitSet d(BitSet n) {
+        if (n.isEmpty()) {
+            return n;
         } else {
-            return ((long) (1)) << zeros(n);
+            BitSet ans = new BitSet(zeros(n));
+            ans.set(ans.size() - 1, true);
+            return ans;
         }
     }
 
-    protected static int zeros(long n) {
-        if (n == 0) {
+    protected static int zeros(BitSet n) {
+        if (n.isEmpty()) {
             return 0;
         } else {
             int ans = 0;
-            while ((n & (1 << ans)) == 0) {
+            while (!n.get(ans)) {
                 ans++;
             }
             return ans;
         }
     }
 
-    protected static long pred(long n) {
-        //some optimisation kekw
-        if (n % 2 == 0) {
-            return n - 1;
-        }
-        return n - d(n);
+    protected static BitSet pred(BitSet n) {
+        n.xor(d(n));
+        return n;
     }
 
-    protected static long pred(int t, long n) {
+    protected static BitSet pred(int t, BitSet n) {
         if (t == 1) {
             return pred(n);
         } else {
@@ -37,51 +38,50 @@ public class AccumulatorUtils {
         }
     }
 
-    protected static long rpred(int i, long n) {
+    protected static BitSet rpred(BitSet i, BitSet n) {
         //TODO: check realization
         int count = 0;
-        for (long cur = 1; cur <= i; cur *= 2) {
-            if ((i & cur) > 0) {
-                count++;
+        for (int cur = i.nextClearBit(0); cur != -1; cur = i.nextSetBit(cur)) {
+            int ind = 0;
+            if ((ind = n.nextSetBit(ind)) != -1) {
+                n.set(ind, false);
             }
         }
-        long ans = n;
-        for (long cur = 1; cur <= ans && count > 0; cur *= 2) {
-            if ((cur & ans) > 0) {
-                ans ^= cur;
-                count--;
-            }
+        return n;
+    }
+
+    private static void merge(BitSet origin, BitSet added, int startInd) {
+        for (int i = 0; i < added.length(); i++) {
+            origin.set(startInd + i, added.get(i));
         }
+    }
+
+    protected static BitSet concatDigits(BitSet a, BitSet b, BitSet c) {
+        if (a.isEmpty()) return concatDigits(b, c);
+        if (b.isEmpty()) return concatDigits(a, c);
+        if (c.isEmpty()) return concatDigits(a, b);
+        BitSet ans = new BitSet(a.length() + b.length() + c.length());
+        merge(ans, c, 0);
+        merge(ans, b, c.length());
+        merge(ans, a, b.length() + c.length());
         return ans;
     }
 
-    protected static long concatDigits(long a, long b, long c) {
-        if (a == 0) return concatDigits(b, c);
-        if (b == 0) return concatDigits(a, c);
-        if (c == 0) return concatDigits(a, b);
-        int b_len = getLen(b), c_len = getLen(c);
-        return a << (b_len + c_len) + b << (c_len) + c;
+    protected static BitSet concatDigits(BitSet a, BitSet b) {
+        if (a.isEmpty()) return concatDigits(b);
+        if (b.isEmpty()) return concatDigits(a);
+        BitSet ans = new BitSet(a.length() + b.length());
+        merge(ans, b, 0);
+        merge(ans, a, b.length());
+        return ans;
     }
 
-    protected static long concatDigits(long a, long b) {
-        if (a == 0) return concatDigits(b);
-        if (b == 0) return concatDigits(a);
-        int b_len = getLen(b);
-        return a << (b_len) + b;
-    }
-
-    protected static long concatDigits(long a) {
-        if (a == 0) {
+    protected static BitSet concatDigits(BitSet a) {
+        if (a.isEmpty()) {
             //Todo: Throw smth?
-            a = -0;
+            System.out.println("Warning! Zero provided to concat");
         }
         return a;
     }
 
-
-    private static int getLen(long x) {
-        int ans = 0;
-        for (long cur = 1; cur <= x; cur *= 2, ans++) ;
-        return ans;
-    }
 }
