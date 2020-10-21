@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 public class SmartBackLinesAccumulator implements Accumulator {
-    private int size;
-    private final ArrayList<BitSet> S;
+    private long size;
+    private final ArrayList<byte[]> S;
 
     SmartBackLinesAccumulator() {
         S = new ArrayList<>();
@@ -18,20 +18,21 @@ public class SmartBackLinesAccumulator implements Accumulator {
         return size;
     }
 
-    public BitSet get(int position) {
+    public byte[] get(long position) {
         if (position == 0) {
             return null;
         } else {
-            return S.get(position);
+            return S.get((int) position);
         }
     }
 
-    @Override
-    public void add(BitSet element) {
+    public void add(byte[] element) {
         if ((size & (size - 1)) == 0) {
             S.add(null);
             size++;
         }
-        BitSet sum = AccumulatorUtils.concatDigits(element, get(size - 1), get(size - AccumulatorUtils.d(new BitSet(size)).))
+        byte[] sum = AccumulatorUtils.concatDigits(element, get(size - 1), get(AccumulatorUtils.d(size)));
+        byte[] result = AccumulatorUtils.getSha256(sum);
+        S.set((int) size, result);
     }
 }
