@@ -4,9 +4,9 @@ import java.util.BitSet;
 
 public interface Accumulator {
 
-    BitSet size();
+    long size();
 
-    BitSet get(BitSet position);
+    BitSet get(long position);
 
     void add(BitSet element);
 }

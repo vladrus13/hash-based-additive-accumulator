@@ -6,19 +6,19 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 public class SmartBackLinesAccumulator implements Accumulator {
-    private BitSet size;
+    private int size;
     private final ArrayList<BitSet> S;
 
     SmartBackLinesAccumulator() {
         S = new ArrayList<>();
-        size = new BitSet(0);
+        size = 0;
     }
 
-    public BitSet size() {
+    public long size() {
         return size;
     }
 
-    public BitSet get(BitSet position) {
+    public BitSet get(int position) {
         if (position == 0) {
             return null;
         } else {
