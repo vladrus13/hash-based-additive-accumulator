@@ -8,7 +8,7 @@ public class AccumulatorUtils {
             return n;
         } else {
             BitSet ans = new BitSet(zeros(n));
-            ans.set(ans.size() - 1, false);
+            ans.set(ans.size() - 1, true);
             return ans;
         }
     }
