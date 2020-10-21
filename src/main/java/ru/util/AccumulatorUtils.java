@@ -22,6 +22,10 @@ public class AccumulatorUtils {
     }
 
     protected static long pred(long n) {
+        //some optimisation kekw
+        if (n % 2 == 0) {
+            return n - 1;
+        }
         return n - d(n);
     }
 
@@ -51,4 +55,33 @@ public class AccumulatorUtils {
         return ans;
     }
 
+    protected static long concatDigits(long a, long b, long c) {
+        if (a == 0) return concatDigits(b, c);
+        if (b == 0) return concatDigits(a, c);
+        if (c == 0) return concatDigits(a, b);
+        int b_len = getLen(b), c_len = getLen(c);
+        return a << (b_len + c_len) + b << (c_len) + c;
+    }
+
+    protected static long concatDigits(long a, long b) {
+        if (a == 0) return concatDigits(b);
+        if (b == 0) return concatDigits(a);
+        int b_len = getLen(b);
+        return a << (b_len) + b;
+    }
+
+    protected static long concatDigits(long a) {
+        if (a == 0) {
+            //Todo: Throw smth?
+            a = -0;
+        }
+        return a;
+    }
+
+
+    private static int getLen(long x) {
+        int ans = 0;
+        for (long cur = 1; cur <= x; cur *= 2, ans++) ;
+        return ans;
+    }
 }
