@@ -5,7 +5,7 @@ public class AccumulatorUtils {
         if (n == 0) {
             return 0;
         } else {
-            return (long) (1) << zeros(n);
+            return ((long) (1)) << zeros(n);
         }
     }
 
@@ -22,7 +22,7 @@ public class AccumulatorUtils {
     }
 
     protected static long pred(long n) {
-        return n - zeros(n);
+        return n - d(n);
     }
 
     protected static long pred(int t, long n) {
