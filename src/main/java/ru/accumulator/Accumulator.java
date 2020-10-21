@@ -1,4 +1,10 @@
 package ru.accumulator;
 
-public class Accumulator {
+import java.util.BitSet;
+
+public interface Accumulator {
+
+    long size();
+
+    String get(int position);
 }
