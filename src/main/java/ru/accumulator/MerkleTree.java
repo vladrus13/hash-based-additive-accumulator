@@ -9,6 +9,7 @@ import java.util.List;
 
 public class MerkleTree {
     List<String> hashed_data;
+    int capacity;
 
     public MerkleTree(List<String> source) {
         int size = 1;
@@ -16,6 +17,7 @@ public class MerkleTree {
             size <<= 1;
         }
 
+        capacity = source.size();
         size--;
         hashed_data = new ArrayList<>(Collections.nCopies(size, ""));
 
@@ -25,6 +27,29 @@ public class MerkleTree {
         for (int i = size / 2 - 1; i >= 0; i--) {
             hashed_data.set(i, getInnerVertexesHash(i));
         }
+    }
+
+
+    private void expand() {
+        List<String> new_storage = new ArrayList<>(Collections.nCopies(2 * hashed_data.size() + 1, ""));
+        for (int i = 0; i < hashed_data.size(); i++) {
+            new_storage.set(i + (int) AccumulatorUtils.max_leq_pow2((long) i + 1), hashed_data.get(i));
+        }
+        new_storage.set(0, getInnerVertexesHash(0));
+        hashed_data = new_storage;
+    }
+
+    public void add(String value) {
+        if (capacity == 1 + hashed_data.size() / 2) {
+            expand();
+        }
+
+        hashed_data.set(capacity + hashed_data.size() / 2, getLeafHash(value));
+        for (int currentState = (capacity + hashed_data.size() / 2 - 1) / 2; currentState >= 0;
+             currentState = (currentState - 1) / 2) {
+            hashed_data.set(currentState, getInnerVertexesHash(currentState));
+        }
+        capacity++;
     }
 
     public String getRoot() {
@@ -79,8 +104,10 @@ public class MerkleTree {
     }
 
     private String getInnerVertexesHash(int index) {
-        return Arrays.toString(AccumulatorUtils.getSha256((
-                hashed_data.get(2 * index + 1) + hashed_data.get(2 * index + 2)).getBytes()));
+        if (index * 2 + 1 < hashed_data.size()) {
+            return Arrays.toString(AccumulatorUtils.getSha256((
+                    hashed_data.get(2 * index + 1) + hashed_data.get(2 * index + 2)).getBytes()));
+        } else return getLeaf(index);
     }
 
 

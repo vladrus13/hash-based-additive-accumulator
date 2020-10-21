@@ -3,6 +3,14 @@ package ru.util;
 import java.security.MessageDigest;
 
 public class AccumulatorUtils {
+    public static long max_leq_pow2(long n) {
+        long ans = 1;
+        while (ans << 1 <= n) {
+            ans <<= 1;
+        }
+        return ans;
+    }
+
     //Return the maximum power of two that divides n. Return 0 for n == 0."""
     public static long d(long n) {
         return n & (-n);
