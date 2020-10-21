@@ -4,74 +4,63 @@ import java.security.MessageDigest;
 import java.util.BitSet;
 
 public class AccumulatorUtils {
-    public static BitSet d(BitSet n) {
-        if (n.isEmpty()) {
-            return n;
+    //Return the maximum power of two that divides n. Return 0 for n == 0."""
+    public static long d(long n) {
+        return n & (-n);
+    }
+
+    public static int zeros(long n) {
+        int ans = 0;
+        while ((n & 1) == 0) {
+            n /= 2;
+            ans++;
+        }
+        return ans;
+    }
+
+    public static long pred(long n) {
+        return n - d(n);
+    }
+
+    public static long hook_index(long n, long t) {
+        long d = 1 << t;
+        long r = n & -d;
+        if ((n & d) != 0) {
+            return r;
         } else {
-            BitSet ans = new BitSet(zeros(n));
-            ans.set(ans.size() - 1, true);
-            return ans;
+            return (r - 1) & -d;
         }
     }
 
-    public static int zeros(BitSet n) {
-        if (n.isEmpty()) {
-            return 0;
-        } else {
-            int ans = 0;
-            while (!n.get(ans)) {
-                ans++;
-            }
-            return ans;
+    public static long rpred(long i, long n) {
+        while (pred(i) >= n) {
+            i = pred(i);
         }
+        return i;
     }
 
-    public static BitSet pred(BitSet n) {
-        n.set(zeros(n), false);
-        return n;
-    }
-
-    public static BitSet pred(int t, BitSet n) {
-        if (t == 1) {
-            return pred(n);
-        } else {
-            return pred(pred(t - 1, n));
-        }
-    }
-
-    public static BitSet rpred(BitSet i, BitSet n) {
-        //TODO: check realization
-        for (int cur = i.nextClearBit(0); cur != -1; cur = i.nextSetBit(cur)) {
-            int ind = 0;
-            if ((ind = n.nextSetBit(ind)) != -1) {
-                n.set(ind, false);
-            }
-        }
-        return n;
-    }
-
-    public static BitSet concatDigits(BitSet a, BitSet b, BitSet c) {
-        if (c.isEmpty()) return concatDigits(a, b);
-        BitSet ans = new BitSet(a.length() + b.length() + c.length());
+    public static byte[] concatDigits(byte[] a, byte[] b, byte[] c) {
+        if (c.length == 0) return concatDigits(a, b);
+        if (a.length == 0) return concatDigits(b, c);
+        if (b.length == 0) return concatDigits(a, c);
+        byte[] ans = new byte[a.length + b.length + c.length];
         merge(ans, c, 0);
-        merge(ans, b, c.length());
-        if (a.isEmpty()) return concatDigits(b, c);
-        if (b.isEmpty()) return concatDigits(a, c);
-        merge(ans, a, b.length() + c.length());
+        merge(ans, b, c.length);
+        merge(ans, a, b.length + c.length);
         return ans;
     }
 
-    public static BitSet concatDigits(BitSet a, BitSet b) {
-        if (a.isEmpty()) return concatDigits(b);
-        if (b.isEmpty()) return concatDigits(a);
-        BitSet ans = new BitSet(a.length() + b.length());
+    public static byte[] concatDigits(byte[] a, byte[] b) {
+        if (a.length == 0) return concatDigits(b);
+        if (b.length == 0) return concatDigits(a);
+        byte[] ans = new byte[a.length + b.length];
         merge(ans, b, 0);
-        merge(ans, a, b.length());
+        merge(ans, a, b.length);
         return ans;
     }
 
-    public static BitSet concatDigits(BitSet a) {
-        if (a.isEmpty()) {
+    public static byte[] concatDigits(byte[] a) {
+        if (a.length == 0) {
             //Todo: Throw smth?
             System.out.println("Warning! Zero provided to concat");
         }
@@ -88,15 +77,7 @@ public class AccumulatorUtils {
         }
     }
 
-    public static byte[] getSha256(BitSet value) {
-        return getSha256(value.toByteArray());
+    private static void merge(byte[] origin, byte[] added, int startInd) {
+        System.arraycopy(added, 0, origin, startInd, added.length);
     }
-
-    private static void merge(BitSet origin, BitSet added, int startInd) {
-        for (int i = 0; i < added.length(); i++) {
-            origin.set(startInd + i, added.get(i));
-        }
-    }
-
-
 }
