@@ -1,7 +1,6 @@
 package ru.util;
 
 import java.security.MessageDigest;
-import java.util.BitSet;
 
 public class AccumulatorUtils {
     //Return the maximum power of two that divides n. Return 0 for n == 0."""

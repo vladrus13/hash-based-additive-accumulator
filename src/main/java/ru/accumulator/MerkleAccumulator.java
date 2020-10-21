@@ -1,7 +1,5 @@
 package ru.accumulator;
 
-import java.util.BitSet;
-
 public class MerkleAccumulator implements Accumulator {
     public long size() {
         return 0;

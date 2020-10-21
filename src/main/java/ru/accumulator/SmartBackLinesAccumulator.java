@@ -3,7 +3,6 @@ package ru.accumulator;
 import ru.util.AccumulatorUtils;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 
 public class SmartBackLinesAccumulator implements Accumulator {
     private long size;
