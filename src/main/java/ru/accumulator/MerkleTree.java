@@ -48,7 +48,7 @@ public class MerkleTree {
 
         for (int currentState = index + hashed_data.size() / 2; currentState >= 0;
              currentState = (currentState - 1) / 2) {
-            ans.set(ans.size() - 1, getInnerVertexesHash(getNeighbour(currentState)));
+            ans.add(getInnerVertexesHash(getNeighbour(currentState)));
         }
 
         return ans;
