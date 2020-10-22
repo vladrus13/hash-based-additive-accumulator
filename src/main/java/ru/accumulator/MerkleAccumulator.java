@@ -5,6 +5,7 @@ import ru.util.AccumulatorUtils;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MerkleAccumulator implements Accumulator {
     private long size;
@@ -47,10 +48,39 @@ public class MerkleAccumulator implements Accumulator {
         return answer;
     }
 
-    public void prove(long j, long i, LinkedList<byte[]> answer) {
-        if (!(size <= j && j <= i)) {
+    private MerkleTree getTree(long n) {
+        long i = 0;
+        long t = 1;
+        ArrayList<Long> I = new ArrayList<>();
+        while (t <= n) {
+            long index = AccumulatorUtils.hook_index(n, i);
+            I.add(index);
+            i++;
+            t *= 2;
+        }
+        ArrayList<String> S = new ArrayList<>();
+        for (long index : I) {
+            if (index > size) {
+                S.add(AccumulatorUtils.toString(R.get((int) index)));
+            } else {
+                S.add(S.get(AccumulatorUtils.zeros(index)));
+            }
+        }
+        return new MerkleTree(S);
+    }
+
+    private void prove(long i, long j, LinkedList<byte[]> answer) {
+        if (!(size <= i && i <= j)) {
             throw new IllegalArgumentException("Size less than first second argument or second less than first");
         }
-
+        MerkleTree previousMerkle = getTree(j - 1);
+        answer.addAll(List.of(elements.get((int) j), AccumulatorUtils.toByteArray(previousMerkle.getRoot())));
+        if (j > i) {
+            long i_n = AccumulatorUtils.rpred(j - 1, i);
+            long leaf = AccumulatorUtils.zeros(i_n);
+            // TODO: answer.add(previousMerkle.get(leaf));
+            answer.addAll(previousMerkle.proof((int) leaf).stream().map(AccumulatorUtils::toByteArray).collect(Collectors.toList()));
+            prove(i, i_n, answer);
+        }
     }
 }
