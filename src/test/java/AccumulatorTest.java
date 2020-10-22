@@ -18,13 +18,13 @@ public class AccumulatorTest {
     }
 
     @BeforeEach
-    public static void beforeEach() {
+    public void beforeEach() {
         accumulators.forEach(Accumulator::clear);
     }
 
     @Test
     @Order(1)
-    public static void oneElementTest() {
+    public void oneElementTest() {
         String test = Util.generateRandomString(10);
         for (Accumulator accumulator : accumulators) {
             accumulator.add(AccumulatorUtils.toByteArray(test));
