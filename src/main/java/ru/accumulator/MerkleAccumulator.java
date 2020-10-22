@@ -7,12 +7,30 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Merkle-tree realization of accumulator
+ */
 public class MerkleAccumulator implements Accumulator {
+    /**
+     * Size of structure
+     */
     private long size;
+    /**
+     * Merkle tree
+     */
     private final MerkleTree S;
+    /**
+     * Hashing elements
+     */
     private final ArrayList<byte[]> R;
+    /**
+     * Elements
+     */
     private final ArrayList<byte[]> elements;
 
+    /**
+     * Constructor for empty accumulator
+     */
     public MerkleAccumulator() {
         size = 0;
         S = new MerkleTree();
@@ -20,11 +38,19 @@ public class MerkleAccumulator implements Accumulator {
         elements = new ArrayList<>();
     }
 
-
+    /**
+     * Get size
+     * @return size
+     */
     public long size() {
         return size;
     }
 
+    /**
+     * Get element on position
+     * @param position position
+     * @return element
+     */
     public byte[] get(long position) {
         if (position == 0) {
             return null;
@@ -33,6 +59,10 @@ public class MerkleAccumulator implements Accumulator {
         }
     }
 
+    /**
+     * Add element to accumulator
+     * @param element element
+     */
     public void add(byte[] element) {
         byte[] root = AccumulatorUtils.toByteArray(S.getRoot());
         size++;
@@ -42,6 +72,11 @@ public class MerkleAccumulator implements Accumulator {
         R.add(result);
     }
 
+    /**
+     * Make tree from [0..n] elements
+     * @param n position
+     * @return {@link MerkleTree}
+     */
     private MerkleTree makeTree(long n) {
         ArrayList<Long> I = new ArrayList<>();
         ArrayList<String> S = new ArrayList<>();
@@ -62,6 +97,11 @@ public class MerkleAccumulator implements Accumulator {
         return new MerkleTree(S);
     }
 
+    /**
+     * Get list of proves for position
+     * @param position position
+     * @return list of proves
+     */
     public List<byte[]> prove(long position) {
         LinkedList<byte[]> answer = new LinkedList<>();
         prove(position, size, answer);
@@ -76,6 +116,12 @@ public class MerkleAccumulator implements Accumulator {
         elements.clear();
     }
 
+    /**
+     * Get proves from i to j
+     * @param j position start
+     * @param i position finish
+     * @param answer list with answer
+     */
     public void prove(long j, long i, LinkedList<byte[]> answer) {
         if (!(size <= j && j <= i)) {
             throw new IllegalArgumentException("Size less than first second argument or second less than first");
