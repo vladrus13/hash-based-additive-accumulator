@@ -29,6 +29,11 @@ public class MerkleTree {
         }
     }
 
+    public MerkleTree() {
+        capacity = 0;
+        hashed_data = new ArrayList<>();
+    }
+
 
     private void expand() {
         List<String> new_storage = new ArrayList<>(Collections.nCopies(2 * hashed_data.size() + 1, ""));
