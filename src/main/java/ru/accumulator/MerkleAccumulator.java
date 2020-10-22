@@ -68,6 +68,14 @@ public class MerkleAccumulator implements Accumulator {
         return answer;
     }
 
+    @Override
+    public void clear() {
+        size = 0;
+        // TODO: S.clear();
+        R.clear();
+        elements.clear();
+    }
+
     public void prove(long j, long i, LinkedList<byte[]> answer) {
         if (!(size <= j && j <= i)) {
             throw new IllegalArgumentException("Size less than first second argument or second less than first");

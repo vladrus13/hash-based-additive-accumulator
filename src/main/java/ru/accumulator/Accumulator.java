@@ -11,4 +11,6 @@ public interface Accumulator {
     void add(byte[] element);
 
     List<byte[]> prove(long position);
+
+    void clear();
 }

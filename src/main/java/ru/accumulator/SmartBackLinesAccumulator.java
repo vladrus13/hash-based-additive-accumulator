@@ -11,7 +11,7 @@ public class SmartBackLinesAccumulator implements Accumulator {
     private final ArrayList<byte[]> S;
     private final ArrayList<byte[]> elements;
 
-    SmartBackLinesAccumulator() {
+    public SmartBackLinesAccumulator() {
         S = new ArrayList<>();
         elements = new ArrayList<>();
         size = 0;
@@ -45,6 +45,13 @@ public class SmartBackLinesAccumulator implements Accumulator {
         LinkedList<byte[]> answer = new LinkedList<>();
         prove(position, size, answer);
         return answer;
+    }
+
+    @Override
+    public void clear() {
+        S.clear();
+        elements.clear();
+        size = 0;
     }
 
     public void prove(long i, long j, LinkedList<byte[]> answer) {
