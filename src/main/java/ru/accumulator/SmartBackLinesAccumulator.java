@@ -25,7 +25,7 @@ public class SmartBackLinesAccumulator implements Accumulator {
         if (position == 0) {
             return null;
         } else {
-            return S.get((int) position);
+            return S.get(AccumulatorUtils.zeros(position));
         }
     }
 

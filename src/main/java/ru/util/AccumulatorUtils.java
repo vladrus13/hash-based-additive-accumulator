@@ -1,6 +1,7 @@
 package ru.util;
 
 import java.security.MessageDigest;
+import java.util.Base64;
 
 public class AccumulatorUtils {
     public static long max_leq_pow2(long n) {
@@ -86,5 +87,13 @@ public class AccumulatorUtils {
 
     private static void merge(byte[] origin, byte[] added, int startInd) {
         System.arraycopy(added, 0, origin, startInd, added.length);
+    }
+
+    public static byte[] toByteArray(String s) {
+        return Base64.getDecoder().decode(s);
+    }
+
+    public static String toString(byte[] b) {
+        return new String(Base64.getEncoder().encode(b));
     }
 }
