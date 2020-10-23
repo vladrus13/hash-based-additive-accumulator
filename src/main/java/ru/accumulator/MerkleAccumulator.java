@@ -18,7 +18,7 @@ public class MerkleAccumulator implements Accumulator {
     /**
      * Merkle tree
      */
-    private MerkleTree S;
+    private final MerkleTree S;
     /**
      * Hashing elements
      */
@@ -100,6 +100,7 @@ public class MerkleAccumulator implements Accumulator {
         S.clear();
         R.clear();
         elements.clear();
+        elements.add(null);
     }
 
     @Override
