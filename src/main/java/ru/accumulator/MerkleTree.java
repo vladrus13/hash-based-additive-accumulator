@@ -79,8 +79,7 @@ public class MerkleTree {
     }
 
     public String getLeaf(int index) {
-        return getOriginal(index);
-//        return hashed_data.get(index + hashed_data.size() / 2);
+        return hashed_data.get(index + hashed_data.size() / 2);
     }
 
     public String getOriginal(int index) {
