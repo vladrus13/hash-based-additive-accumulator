@@ -158,9 +158,9 @@ public class MerkleTree {
     }
 
     private String getInnerVertexesHash(int index) {
-        if (index * 2 + 1 < hashed_data.size()) {
+        if (index * 2 + 1 < hashed_data.size() / 2) {
             return Arrays.toString(AccumulatorUtils.getSha256((
                     hashed_data.get(2 * index + 1) + hashed_data.get(2 * index + 2)).getBytes()));
-        } else return getLeaf(index);
+        } else return getLeaf(index - hashed_data.size() / 2);
     }
 }
