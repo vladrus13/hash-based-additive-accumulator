@@ -10,6 +10,7 @@ import java.util.List;
 public class MerkleTree {
     List<String> hashed_data;
     int capacity;
+    int emptyLeaf;
 
     public MerkleTree(List<String> source) {
         int size = 1;
@@ -20,7 +21,7 @@ public class MerkleTree {
         capacity = source.size();
         size--;
         hashed_data = new ArrayList<>(Collections.nCopies(size, ""));
-
+        emptyLeaf = size / 2 + capacity;
         for (int i = 0; i < source.size(); i++) {
             hashed_data.set(i + size / 2, getLeafHash(source.get(i)));
         }
@@ -31,7 +32,14 @@ public class MerkleTree {
 
     public MerkleTree() {
         capacity = 0;
+        emptyLeaf = 0;
         hashed_data = new ArrayList<>();
+    }
+
+    public void clear() {
+        capacity = 0;
+        emptyLeaf = 0;
+        hashed_data = Collections.emptyList();
     }
 
 
@@ -40,8 +48,10 @@ public class MerkleTree {
         for (int i = 0; i < hashed_data.size(); i++) {
             new_storage.set(i + (int) AccumulatorUtils.max_leq_pow2((long) i + 1), hashed_data.get(i));
         }
+
         new_storage.set(0, getInnerVertexesHash(0));
         hashed_data = new_storage;
+        emptyLeaf = capacity + hashed_data.size() / 2;
     }
 
     /**
@@ -50,18 +60,17 @@ public class MerkleTree {
      * @param value - pushbacking value
      */
     public void add(String value) {
-        if (capacity == 1 + hashed_data.size() / 2) {
+        if (checkCapacity()) {
             expand();
         }
-
-        hashed_data.set(capacity + hashed_data.size() / 2, getLeafHash(value));
-        for (int currentState = (capacity + hashed_data.size() / 2 - 1) / 2; currentState >= 0;
-             currentState = (currentState - 1) / 2) {
-            hashed_data.set(currentState, getInnerVertexesHash(currentState));
-        }
-        capacity++;
+        set(emptyLeaf, value);
     }
-    //Todo: dont sure if we wanna contol number of leafs when using set operation
+
+    private boolean checkCapacity() {
+        return capacity + 1 + hashed_data.size() / 2 == hashed_data.size();
+    }
+
+    //Todo: dont sure if we wanna control number of leaves when using set operation
     public void set(int index, String value) {
         if (!hashed_data.get(hashed_data.size() / 2 + index).equals("")) {
             System.out.println("Warning! There was smth on this position!");
@@ -73,6 +82,12 @@ public class MerkleTree {
             hashed_data.set(currentState, getInnerVertexesHash(currentState));
         }
         capacity++;
+        if (!checkCapacity()) {
+            while (!hashed_data.get(emptyLeaf + hashed_data.size() / 2).equals("")) {
+                emptyLeaf++;
+                emptyLeaf %= hashed_data.size() / 2;
+            }
+        }
     }
 
     public String getRoot() {
