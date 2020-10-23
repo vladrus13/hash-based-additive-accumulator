@@ -33,4 +33,20 @@ public class Util {
         }
         return sb.toString();
     }
+
+    public static byte[] generateRandomByte(long size) {
+        byte[] returned = new byte[(int) size];
+        random.nextBytes(returned);
+        return returned;
+    }
+
+    /**
+     * Generate int in range [a, b]
+     * @param a first
+     * @param b second
+     * @return random in [a, b]
+     */
+    public static int generateInRange(int a, int b) {
+        return random.nextInt(b - a  + 1) + a;
+    }
 }

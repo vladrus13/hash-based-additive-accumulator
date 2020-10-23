@@ -3,6 +3,7 @@ package ru.accumulator;
 import ru.util.AccumulatorUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class SmartBackLinesAccumulator implements Accumulator {
      * Constructor for empty accumulator
      */
     public SmartBackLinesAccumulator() {
-        S = new ArrayList<>();
+        S = new ArrayList<>(Collections.singleton(null));
         elements = new ArrayList<>();
         size = 0;
     }
@@ -69,7 +70,9 @@ public class SmartBackLinesAccumulator implements Accumulator {
     @Override
     public void clear() {
         S.clear();
+        S.add(null);
         elements.clear();
+        elements.add(null);
         size = 0;
     }
 
