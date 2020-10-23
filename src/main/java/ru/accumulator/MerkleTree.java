@@ -67,7 +67,7 @@ public class MerkleTree {
     }
 
     private boolean checkCapacity() {
-        return capacity + 1 + hashed_data.size() / 2 == hashed_data.size();
+        return capacity + 1 + hashed_data.size() / 2 >= hashed_data.size();
     }
 
     //Todo: dont sure if we wanna control number of leaves when using set operation
