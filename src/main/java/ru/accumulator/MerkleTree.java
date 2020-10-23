@@ -9,6 +9,7 @@ import java.util.List;
 
 public class MerkleTree {
     List<String> hashed_data;
+    List<String> original_data;
     int capacity;
 
     public MerkleTree(List<String> source) {
@@ -17,7 +18,7 @@ public class MerkleTree {
             return;
         }
 
-
+        original_data = source;
         int size = (int) AccumulatorUtils.max_leq_pow2(4 * source.size() - 1);
         //assert (size/2 >= source.size());
         capacity = source.size();
@@ -33,11 +34,13 @@ public class MerkleTree {
 
     public MerkleTree() {
         capacity = 0;
+        original_data = Collections.emptyList();
         hashed_data = new ArrayList<>(Collections.nCopies(1, ""));
     }
 
     public void clear() {
         capacity = 0;
+        original_data = Collections.emptyList();
         hashed_data = new ArrayList<>(Collections.nCopies(1, ""));
     }
 
@@ -76,7 +79,12 @@ public class MerkleTree {
     }
 
     public String getLeaf(int index) {
-        return hashed_data.get(index + hashed_data.size() / 2);
+        return getOriginal(index);
+//        return hashed_data.get(index + hashed_data.size() / 2);
+    }
+
+    public String getOriginal(int index) {
+        return original_data.get(index);
     }
 
 
