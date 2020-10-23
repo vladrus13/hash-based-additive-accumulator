@@ -64,6 +64,7 @@ public class MerkleTree {
             expand();
         }
 
+        original_data.add(value);
         hashed_data.set(index + hashed_data.size() / 2, getLeafHash(value));
         for (int currentState = (index + hashed_data.size() / 2 - 1) / 2; ;
              currentState = (currentState - 1) / 2) {
