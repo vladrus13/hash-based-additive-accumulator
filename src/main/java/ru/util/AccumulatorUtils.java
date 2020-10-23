@@ -48,9 +48,9 @@ public class AccumulatorUtils {
     }
 
     public static byte[] concatDigits(byte[] a, byte[] b, byte[] c) {
-        if (c.length == 0) return concatDigits(a, b);
-        if (a.length == 0) return concatDigits(b, c);
-        if (b.length == 0) return concatDigits(a, c);
+        if (c == null || c.length == 0) return concatDigits(a, b);
+        if (a == null || a.length == 0) return concatDigits(b, c);
+        if (b == null || b.length == 0) return concatDigits(a, c);
         byte[] ans = new byte[a.length + b.length + c.length];
         merge(ans, c, 0);
         merge(ans, b, c.length);
@@ -59,8 +59,8 @@ public class AccumulatorUtils {
     }
 
     public static byte[] concatDigits(byte[] a, byte[] b) {
-        if (a.length == 0) return concatDigits(b);
-        if (b.length == 0) return concatDigits(a);
+        if (a == null || a.length == 0) return concatDigits(b);
+        if (b == null || b.length == 0) return concatDigits(a);
         byte[] ans = new byte[a.length + b.length];
         merge(ans, b, 0);
         merge(ans, a, b.length);
@@ -68,7 +68,7 @@ public class AccumulatorUtils {
     }
 
     public static byte[] concatDigits(byte[] a) {
-        if (a.length == 0) {
+        if (a == null || a.length == 0) {
             //Todo: Throw smth?
             System.out.println("Warning! Zero provided to concat");
         }
