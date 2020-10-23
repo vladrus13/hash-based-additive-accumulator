@@ -33,13 +33,13 @@ public class MerkleTree {
     public MerkleTree() {
         capacity = 0;
         emptyLeaf = 0;
-        hashed_data = new ArrayList<>(Collections.nCopies(3, ""));
+        hashed_data = new ArrayList<>(Collections.nCopies(1, ""));
     }
 
     public void clear() {
         capacity = 0;
         emptyLeaf = 0;
-        hashed_data = new ArrayList<>(Collections.nCopies(3, ""));
+        hashed_data = new ArrayList<>(Collections.nCopies(1, ""));
     }
 
 
@@ -74,13 +74,9 @@ public class MerkleTree {
         return index + hashed_data.size() / 2 >= hashed_data.size();
     }
 
-    //Todo: dont sure if we wanna control number of leaves when using set operation
     public void set(int index, String value) {
         while (checkCapacity(index)) {
             expand();
-        }
-        if (!hashed_data.get(hashed_data.size() / 2 + index).equals("")) {
-            System.out.println("Warning! There was smth on this position!");
         }
 
         hashed_data.set(index + hashed_data.size() / 2, getLeafHash(value));
@@ -122,7 +118,6 @@ public class MerkleTree {
              currentState = (currentState - 1) / 2) {
             ans.add(getInnerVertexesHash(getNeighbour(currentState)));
         }
-
         return ans;
     }
     /*
