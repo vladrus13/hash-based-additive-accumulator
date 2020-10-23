@@ -44,6 +44,11 @@ public class MerkleTree {
         hashed_data = new_storage;
     }
 
+    /**
+     * Used only instead of set
+     *
+     * @param value - pushbacking value
+     */
     public void add(String value) {
         if (capacity == 1 + hashed_data.size() / 2) {
             expand();
@@ -51,6 +56,19 @@ public class MerkleTree {
 
         hashed_data.set(capacity + hashed_data.size() / 2, getLeafHash(value));
         for (int currentState = (capacity + hashed_data.size() / 2 - 1) / 2; currentState >= 0;
+             currentState = (currentState - 1) / 2) {
+            hashed_data.set(currentState, getInnerVertexesHash(currentState));
+        }
+        capacity++;
+    }
+    //Todo: dont sure if we wanna contol number of leafs when using set operation
+    public void set(int index, String value) {
+        if (!hashed_data.get(hashed_data.size() / 2 + index).equals("")) {
+            System.out.println("Warning! There was smth on this position!");
+        }
+
+        hashed_data.set(index + hashed_data.size() / 2, getLeafHash(value));
+        for (int currentState = (index + hashed_data.size() / 2 - 1) / 2; currentState >= 0;
              currentState = (currentState - 1) / 2) {
             hashed_data.set(currentState, getInnerVertexesHash(currentState));
         }
@@ -114,9 +132,5 @@ public class MerkleTree {
                     hashed_data.get(2 * index + 1) + hashed_data.get(2 * index + 2)).getBytes()));
         } else return getLeaf(index);
     }
-
-
-    //йопта здарова
-
 
 }
