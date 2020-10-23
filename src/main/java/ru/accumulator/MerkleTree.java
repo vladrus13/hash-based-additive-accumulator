@@ -60,7 +60,7 @@ public class MerkleTree {
      * @param value - pushbacking value
      */
     public void add(String value) {
-        if (checkCapacity()) {
+        while (checkCapacity()) {
             expand();
         }
         set(emptyLeaf, value);
@@ -70,8 +70,15 @@ public class MerkleTree {
         return capacity + 1 + hashed_data.size() / 2 >= hashed_data.size();
     }
 
+    private boolean checkCapacity(int index) {
+        return index + hashed_data.size() / 2 >= hashed_data.size();
+    }
+
     //Todo: dont sure if we wanna control number of leaves when using set operation
     public void set(int index, String value) {
+        while (checkCapacity(index)) {
+            expand();
+        }
         if (!hashed_data.get(hashed_data.size() / 2 + index).equals("")) {
             System.out.println("Warning! There was smth on this position!");
         }
