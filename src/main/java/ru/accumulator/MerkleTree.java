@@ -14,14 +14,14 @@ public class MerkleTree {
 
     public MerkleTree(List<String> source) {
         int size = 1;
-        while (size <= source.size()) {
+        while (size / 2 < source.size()) {
             size <<= 1;
         }
 
         capacity = source.size();
         size--;
         hashed_data = new ArrayList<>(Collections.nCopies(size, ""));
-        emptyLeaf = size / 2 + capacity;
+        emptyLeaf = capacity;
         for (int i = 0; i < source.size(); i++) {
             hashed_data.set(i + size / 2, getLeafHash(source.get(i)));
         }
