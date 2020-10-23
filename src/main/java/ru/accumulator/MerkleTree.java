@@ -116,7 +116,7 @@ public class MerkleTree {
 
         return ans;
     }
-
+    /*
     public boolean verify(String rootHash, int index, String leafHash, List<String> neighboursHashes) {
         if (getRoot().equals(rootHash) && getLeaf(index).equals(leafHash)) {
             List<String> expected = proof(index);
@@ -130,6 +130,20 @@ public class MerkleTree {
             return true;
         }
         return false;
+    }*/
+
+    public static boolean verify(byte[] rootHash, long index, byte[] leafHash, List<String> neighboursHashes) {
+        byte[] current = leafHash;
+        for (String neighbourString : neighboursHashes) {
+            byte[] neighbour = AccumulatorUtils.toByteArray(neighbourString);
+            if (index % 2 == 0) {
+                current = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(current, neighbour));
+            } else {
+                current = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(neighbour, current));
+            }
+            index /= 2;
+        }
+        return rootHash == current;
     }
 
     private int getNeighbour(int index) {
@@ -147,5 +161,4 @@ public class MerkleTree {
                     hashed_data.get(2 * index + 1) + hashed_data.get(2 * index + 2)).getBytes()));
         } else return getLeaf(index);
     }
-
 }

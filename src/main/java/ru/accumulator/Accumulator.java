@@ -1,5 +1,6 @@
 package ru.accumulator;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -37,4 +38,6 @@ public interface Accumulator {
      * Clear all accumulator
      */
     void clear();
+
+    boolean verify(byte[] R, long i, long j, LinkedList<byte[]> w, byte[] x);
 }

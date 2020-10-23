@@ -38,19 +38,12 @@ public class MerkleAccumulator implements Accumulator {
         elements = new ArrayList<>();
     }
 
-    /**
-     * Get size
-     * @return size
-     */
+    @Override
     public long size() {
         return size;
     }
 
-    /**
-     * Get element on position
-     * @param position position
-     * @return element
-     */
+    @Override
     public byte[] get(long position) {
         if (position == 0) {
             return null;
@@ -59,10 +52,7 @@ public class MerkleAccumulator implements Accumulator {
         }
     }
 
-    /**
-     * Add element to accumulator
-     * @param element element
-     */
+    @Override
     public void add(byte[] element) {
         byte[] root = AccumulatorUtils.toByteArray(S.getRoot());
         size++;
@@ -97,11 +87,7 @@ public class MerkleAccumulator implements Accumulator {
         return new MerkleTree(S);
     }
 
-    /**
-     * Get list of proves for position
-     * @param position position
-     * @return list of proves
-     */
+    @Override
     public List<byte[]> prove(long position) {
         LinkedList<byte[]> answer = new LinkedList<>();
         prove(position, size, answer);
@@ -114,6 +100,37 @@ public class MerkleAccumulator implements Accumulator {
         S.clear();
         R.clear();
         elements.clear();
+    }
+
+    @Override
+    public boolean verify(byte[] R, long i, long j, LinkedList<byte[]> w, byte[] x) {
+        if (j < 1 || i > j) {
+            throw new IllegalArgumentException("Third argument less then second, or less than second");
+        }
+        if (w.size() < 2) {
+            throw new IllegalArgumentException("Size of hash-array less than three");
+        }
+        byte[] it = w.removeFirst();
+        byte[] M_root = w.removeFirst();
+        if (AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, M_root)) != R) {
+            return false;
+        }
+        if (i == j) {
+            return it == x;
+        } else {
+            long i_n = AccumulatorUtils.rpred(i - 1, j);
+            long leaf = AccumulatorUtils.zeros(i_n);
+            byte[] real_leaf = w.removeFirst();
+            long merkle_size = AccumulatorUtils.max_leq_pow2(i -  1); // TODO: Really?
+            ArrayList<String> merkle = new ArrayList<>();
+            for (int k = 0; k < merkle_size; k++) {
+                merkle.add(AccumulatorUtils.toString(w.removeFirst()));
+            }
+            if (!MerkleTree.verify(M_root, leaf, real_leaf, merkle)) {
+                return false;
+            }
+            return verify(real_leaf, i_n, j, w, x);
+        }
     }
 
     /**

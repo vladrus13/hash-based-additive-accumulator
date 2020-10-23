@@ -32,19 +32,12 @@ public class SmartBackLinesAccumulator implements Accumulator {
         size = 0;
     }
 
-    /**
-     * Get size
-     * @return size
-     */
+    @Override
     public long size() {
         return size;
     }
 
-    /**
-     * Get element on position
-     * @param position position
-     * @return element
-     */
+    @Override
     public byte[] get(long position) {
         if (position == 0) {
             return null;
@@ -53,10 +46,7 @@ public class SmartBackLinesAccumulator implements Accumulator {
         }
     }
 
-    /**
-     * Add element to accumulator
-     * @param element element
-     */
+    @Override
     public void add(byte[] element) {
         if ((size & (size - 1)) == 0) {
             S.add(null);
@@ -69,11 +59,7 @@ public class SmartBackLinesAccumulator implements Accumulator {
         elements.set((int) size, element);
     }
 
-    /**
-     * Get list of proves for position
-     * @param position position
-     * @return list of proves
-     */
+    @Override
     public LinkedList<byte[]> prove(long position) {
         LinkedList<byte[]> answer = new LinkedList<>();
         prove(position, size, answer);
@@ -85,6 +71,31 @@ public class SmartBackLinesAccumulator implements Accumulator {
         S.clear();
         elements.clear();
         size = 0;
+    }
+
+    @Override
+    public boolean verify(byte[] R, long i, long j, LinkedList<byte[]> w, byte[] x) {
+        if (i > j) {
+            throw new IllegalArgumentException("Third less than second");
+        }
+        if (w.size() < 3) {
+            throw new IllegalArgumentException("Size of hash-array less than three");
+        }
+        byte[] it = w.removeFirst();
+        byte[] R_previous = w.removeFirst();
+        byte[] R_pred = w.removeFirst();
+        if (AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, R_previous, R_pred)) != R) {
+            return false;
+        }
+        if (i == j) {
+            return it == x;
+        } else {
+            if (AccumulatorUtils.pred(i) >= j) {
+                return verify(R_pred, AccumulatorUtils.pred(i), j, w, x);
+            } else {
+                return verify(R_previous, i - 1, j, w, x);
+            }
+        }
     }
 
     /**
@@ -106,4 +117,6 @@ public class SmartBackLinesAccumulator implements Accumulator {
             }
         }
     }
+
+
 }
