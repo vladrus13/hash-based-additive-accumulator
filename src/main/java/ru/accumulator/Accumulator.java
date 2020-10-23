@@ -32,7 +32,7 @@ public interface Accumulator {
      * @param position position
      * @return list of proves
      */
-    List<byte[]> prove(long position);
+    LinkedList<byte[]> prove(long position);
 
     /**
      * Clear all accumulator

@@ -88,7 +88,7 @@ public class MerkleAccumulator implements Accumulator {
     }
 
     @Override
-    public List<byte[]> prove(long position) {
+    public LinkedList<byte[]> prove(long position) {
         LinkedList<byte[]> answer = new LinkedList<>();
         prove(position, size, answer);
         return answer;
@@ -104,7 +104,7 @@ public class MerkleAccumulator implements Accumulator {
 
     @Override
     public boolean verify(byte[] R, long i, long j, LinkedList<byte[]> w, byte[] x) {
-        if (j < 1 || i > j) {
+        if (!(1 <= j && j <= i)) {
             throw new IllegalArgumentException("Third argument less then second, or less than second");
         }
         if (w.size() < 2) {

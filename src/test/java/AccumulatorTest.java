@@ -4,10 +4,10 @@ import ru.accumulator.MerkleAccumulator;
 import ru.accumulator.SmartBackLinesAccumulator;
 import ru.util.AccumulatorUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AccumulatorTest {
@@ -26,7 +26,7 @@ public class AccumulatorTest {
 
     @Test
     @Order(1)
-    public void oneElementTest() {
+    public void addingOneElementTest() {
         String test = Util.generateRandomString(10);
         for (Accumulator accumulator : accumulators) {
             accumulator.add(AccumulatorUtils.toByteArray(test));
@@ -35,7 +35,7 @@ public class AccumulatorTest {
 
     @Test
     @Order(2)
-    public void moreElementTest() {
+    public void addingMoreElementTest() {
         Set<byte[]> strings = new HashSet<>();
         byte[] test = Util.generateRandomByte(Util.generateInRange(2, 10));
         for (int i = 0; i < 10000; i++) {
@@ -46,6 +46,17 @@ public class AccumulatorTest {
                 accumulator.add(test);
             }
             strings.add(test);
+        }
+    }
+
+    @Test
+    @Order(3)
+    public void oneElementTest() {
+        byte[] test = Util.generateRandomByte(10);
+        for (Accumulator accumulator : accumulators) {
+            accumulator.add(test);
+            LinkedList<byte[]> prove = accumulator.prove(1);
+            assertTrue(accumulator.verify(accumulator.get(accumulator.size()), accumulator.size(), 1, prove, test));
         }
     }
 }
