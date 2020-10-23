@@ -15,7 +15,8 @@ public class AccumulatorTest {
 
     @BeforeAll
     public static void beforeAll() {
-        accumulators = new ArrayList<>(List.of(new SmartBackLinesAccumulator()));
+        // TODO: add SmartBackLinesAccumulator
+        accumulators = new ArrayList<>(List.of(new MerkleAccumulator()));
     }
 
     @BeforeEach
@@ -59,7 +60,7 @@ public class AccumulatorTest {
 
     @Test
     @Order(3)
-    public void handsTest() {
+    public void oneElementTest() {
         byte[] hello = Util.generateRandomByte(5);
         for (Accumulator accumulator : accumulators) {
             addAndTestAll(accumulator, new ArrayList<>(Collections.singleton(hello)));
@@ -68,7 +69,7 @@ public class AccumulatorTest {
 
     @Test
     @Order(4)
-    public void twoElements() {
+    public void twoElementsTest() {
         ArrayList<byte[]> input = new ArrayList<>(List.of(Util.generateRandomByte(10), Util.generateRandomByte(9)));
         for (Accumulator accumulator : accumulators) {
             addAndTestAll(accumulator, input);
@@ -77,7 +78,7 @@ public class AccumulatorTest {
 
     @Test
     @Order(5)
-    public void tenElements() {
+    public void tenElementsTest() {
         ArrayList<byte[]> input = new ArrayList<>();
         for (int i = 1; i < 12; i++) {
             input.add(Util.generateRandomByte(i));

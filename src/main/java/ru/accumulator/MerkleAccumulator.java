@@ -3,6 +3,7 @@ package ru.accumulator;
 import ru.util.AccumulatorUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -114,11 +115,11 @@ public class MerkleAccumulator implements Accumulator {
         }
         byte[] it = w.removeFirst();
         byte[] M_root = w.removeFirst();
-        if (AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, M_root)) != R) {
+        if (!Arrays.equals(AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, M_root)), R)) {
             return false;
         }
         if (i == j) {
-            return it == x;
+            return Arrays.equals(it, x);
         } else {
             long i_n = AccumulatorUtils.rpred(i - 1, j);
             long leaf = AccumulatorUtils.zeros(i_n);
@@ -143,7 +144,7 @@ public class MerkleAccumulator implements Accumulator {
      * @param answer list with answer
      */
     public void prove(long j, long i, LinkedList<byte[]> answer) {
-        if (!(1 <= j && j <= i)) {
+        if (j > i) {
             throw new IllegalArgumentException("Size less than first second argument or second less than first");
         }
         MerkleTree previous = makeTree(i - 1);
