@@ -90,10 +90,10 @@ public class AccumulatorUtils {
     }
 
     public static byte[] toByteArray(String s) {
-        return Base64.getDecoder().decode(s);
+        return s.getBytes();
     }
 
     public static String toString(byte[] b) {
-        return new String(Base64.getEncoder().encode(b));
+        return new String(b);
     }
 }
