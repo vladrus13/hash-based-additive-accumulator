@@ -33,13 +33,13 @@ public class MerkleTree {
     public MerkleTree() {
         capacity = 0;
         emptyLeaf = 0;
-        hashed_data = new ArrayList<>(Collections.nCopies(1, ""));
+        hashed_data = new ArrayList<>(Collections.nCopies(3, ""));
     }
 
     public void clear() {
         capacity = 0;
         emptyLeaf = 0;
-        hashed_data = new ArrayList<>(Collections.nCopies(1, ""));
+        hashed_data = new ArrayList<>(Collections.nCopies(3, ""));
     }
 
 
@@ -77,9 +77,10 @@ public class MerkleTree {
         }
 
         hashed_data.set(index + hashed_data.size() / 2, getLeafHash(value));
-        for (int currentState = (index + hashed_data.size() / 2 - 1) / 2; currentState >= 0;
+        for (int currentState = (index + hashed_data.size() / 2 - 1) / 2; ;
              currentState = (currentState - 1) / 2) {
             hashed_data.set(currentState, getInnerVertexesHash(currentState));
+            if (currentState == 0) break;
         }
 
         capacity++;
