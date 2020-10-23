@@ -17,11 +17,10 @@ public class MerkleTree {
             clear();
             return;
         }
-        int size = 1;
-        while (size / 2 < source.size()) {
-            size <<= 1;
-        }
 
+
+        int size = (int) AccumulatorUtils.max_leq_pow2(4 * source.size() - 1);
+        //assert (size/2 >= source.size());
         capacity = source.size();
         size--;
         hashed_data = new ArrayList<>(Collections.nCopies(size, ""));

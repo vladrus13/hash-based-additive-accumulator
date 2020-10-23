@@ -6,7 +6,7 @@ import java.util.Base64;
 public class AccumulatorUtils {
     public static long max_leq_pow2(long n) {
         long ans = 1;
-        while (ans << 1 <= n) {
+        while ((ans << 1) <= n) {
             ans <<= 1;
         }
         return ans;
