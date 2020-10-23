@@ -18,7 +18,7 @@ public class MerkleAccumulator implements Accumulator {
     /**
      * Merkle tree
      */
-    private final MerkleTree S;
+    private MerkleTree S;
     /**
      * Hashing elements
      */
@@ -67,7 +67,7 @@ public class MerkleAccumulator implements Accumulator {
         byte[] root = AccumulatorUtils.toByteArray(S.getRoot());
         size++;
         byte[] result = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(element, root));
-        // TODO S.set(zeros(size), result)
+        S.set(AccumulatorUtils.zeros(size), AccumulatorUtils.toString(result));
         elements.add(element);
         R.add(result);
     }
@@ -111,7 +111,7 @@ public class MerkleAccumulator implements Accumulator {
     @Override
     public void clear() {
         size = 0;
-        // TODO: S.clear();
+        S.clear();
         R.clear();
         elements.clear();
     }
