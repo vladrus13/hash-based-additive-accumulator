@@ -102,8 +102,9 @@ public class SmartBackLinesAccumulator implements Accumulator {
 
     /**
      * Get proves from i to j
-     * @param j position start
-     * @param i position finish
+     *
+     * @param j      position start
+     * @param i      position finish
      * @param answer list with answer
      */
     private void prove(long i, long j, LinkedList<byte[]> answer) {

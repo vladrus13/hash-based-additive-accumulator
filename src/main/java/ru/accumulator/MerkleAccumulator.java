@@ -64,6 +64,7 @@ public class MerkleAccumulator implements Accumulator {
 
     /**
      * Make tree from [0..n] elements
+     *
      * @param n position
      * @return {@link MerkleTree}
      */
@@ -122,7 +123,7 @@ public class MerkleAccumulator implements Accumulator {
             long i_n = AccumulatorUtils.rpred(i - 1, j);
             long leaf = AccumulatorUtils.zeros(i_n);
             byte[] real_leaf = w.removeFirst();
-            long merkle_size = AccumulatorUtils.max_leq_pow2(i -  1); // TODO: Really?
+            long merkle_size = AccumulatorUtils.max_leq_pow2(i - 1); // TODO: Really?
             ArrayList<String> merkle = new ArrayList<>();
             for (int k = 0; k < merkle_size; k++) {
                 merkle.add(AccumulatorUtils.toString(w.removeFirst()));
@@ -136,8 +137,9 @@ public class MerkleAccumulator implements Accumulator {
 
     /**
      * Get proves from i to j
-     * @param j position start
-     * @param i position finish
+     *
+     * @param j      position start
+     * @param i      position finish
      * @param answer list with answer
      */
     public void prove(long j, long i, LinkedList<byte[]> answer) {
