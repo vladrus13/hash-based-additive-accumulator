@@ -13,6 +13,10 @@ public class MerkleTree {
     int emptyLeaf;
 
     public MerkleTree(List<String> source) {
+        if (source == null || source.size() == 0) {
+            clear();
+            return;
+        }
         int size = 1;
         while (size / 2 < source.size()) {
             size <<= 1;
@@ -112,9 +116,9 @@ public class MerkleTree {
      */
     public List<String> proof(int index) {
         List<String> ans = new ArrayList<>();
-        ans.set(0, getLeaf(index));
+        ans.add(getLeaf(index));
 
-        for (int currentState = index + hashed_data.size() / 2; currentState >= 0;
+        for (int currentState = index + hashed_data.size() / 2; currentState != 0;
              currentState = (currentState - 1) / 2) {
             ans.add(getInnerVertexesHash(getNeighbour(currentState)));
         }
@@ -160,9 +164,9 @@ public class MerkleTree {
     }
 
     private String getInnerVertexesHash(int index) {
-        if (index * 2 + 1 < hashed_data.size() / 2) {
+        if (index < hashed_data.size() / 2) {
             return Arrays.toString(AccumulatorUtils.getSha256((
                     hashed_data.get(2 * index + 1) + hashed_data.get(2 * index + 2)).getBytes()));
-        } else return getLeaf(index - hashed_data.size() / 2);
+        } else return hashed_data.get(index);
     }
 }
