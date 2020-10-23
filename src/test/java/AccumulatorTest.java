@@ -6,7 +6,6 @@ import ru.util.AccumulatorUtils;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -16,7 +15,7 @@ public class AccumulatorTest {
 
     @BeforeAll
     public static void beforeAll() {
-        accumulators = new ArrayList<>(List.of(new MerkleAccumulator(), new SmartBackLinesAccumulator()));
+        accumulators = new ArrayList<>(List.of(new SmartBackLinesAccumulator()));
     }
 
     @BeforeEach
@@ -49,9 +48,48 @@ public class AccumulatorTest {
         }
     }
 
+    public void addAndTestAll(Accumulator accumulator, ArrayList<byte[]> input) {
+        for (byte[] in : input) {
+            accumulator.add(in);
+        }
+        for (int i = 0; i < input.size(); i++) {
+            assertTrue(accumulator.verify(accumulator.get(accumulator.size()), accumulator.size(), i + 1, accumulator.prove(i + 1), input.get(i)));
+        }
+    }
+
     @Test
     @Order(3)
-    public void oneElementTest() {
+    public void handsTest() {
+        byte[] hello = Util.generateRandomByte(5);
+        for (Accumulator accumulator : accumulators) {
+            addAndTestAll(accumulator, new ArrayList<>(Collections.singleton(hello)));
+        }
+    }
+
+    @Test
+    @Order(4)
+    public void twoElements() {
+        ArrayList<byte[]> input = new ArrayList<>(List.of(Util.generateRandomByte(10), Util.generateRandomByte(9)));
+        for (Accumulator accumulator : accumulators) {
+            addAndTestAll(accumulator, input);
+        }
+    }
+
+    @Test
+    @Order(5)
+    public void tenElements() {
+        ArrayList<byte[]> input = new ArrayList<>();
+        for (int i = 1; i < 12; i++) {
+            input.add(Util.generateRandomByte(i));
+        }
+        for (Accumulator accumulator : accumulators) {
+            addAndTestAll(accumulator, input);
+        }
+    }
+
+    @Test
+    @Order(6)
+    public void oneHundredElementTest() {
         Set<byte[]> setTests = new HashSet<>();
         ArrayList<byte[]> tests = new ArrayList<>();
         byte[] test = Util.generateRandomByte(Util.generateInRange(2, 10));
@@ -63,13 +101,25 @@ public class AccumulatorTest {
             tests.add(test);
         }
         for (Accumulator accumulator : accumulators) {
-            for (byte[] s : tests) {
-                accumulator.add(s);
+            addAndTestAll(accumulator, tests);
+        }
+    }
+
+    @Test
+    @Order(7)
+    public void BigRandomTest() {
+        Set<byte[]> setTests = new HashSet<>();
+        ArrayList<byte[]> tests = new ArrayList<>();
+        byte[] test = Util.generateRandomByte(Util.generateInRange(2, 50));
+        for (int i = 0; i < 100000; i++) {
+            while (setTests.contains(test)) {
+                test = Util.generateRandomByte(Util.generateInRange(2, 50));
             }
-            for (int j = 1; j < tests.size(); j++) {
-                LinkedList<byte[]> prove = accumulator.prove(j);
-                assertTrue(accumulator.verify(accumulator.get(accumulator.size()), accumulator.size(), j, prove, tests.get(j - 1)));
-            }
+            setTests.add(test);
+            tests.add(test);
+        }
+        for (Accumulator accumulator : accumulators) {
+            addAndTestAll(accumulator, tests);
         }
     }
 }

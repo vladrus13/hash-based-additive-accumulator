@@ -2,10 +2,7 @@ package ru.accumulator;
 
 import ru.util.AccumulatorUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Smart backlines realization of accumulator
@@ -22,14 +19,16 @@ public class SmartBackLinesAccumulator implements Accumulator {
     /**
      * Elements
      */
-    private final ArrayList<byte[]> elements;
+    private final Map<Integer, byte[]> elements;
+    private final Map<Integer, byte[]> R;
 
     /**
      * Constructor for empty accumulator
      */
     public SmartBackLinesAccumulator() {
         S = new ArrayList<>(Collections.singleton(null));
-        elements = new ArrayList<>();
+        R = new HashMap<>();
+        elements = new HashMap<>();
         size = 0;
     }
 
@@ -51,13 +50,13 @@ public class SmartBackLinesAccumulator implements Accumulator {
     public void add(byte[] element) {
         if ((size & (size - 1)) == 0) {
             S.add(null);
-            elements.add(null);
-            size++;
         }
-        byte[] sum = AccumulatorUtils.concatDigits(element, get(size - 1), get(AccumulatorUtils.d(size)));
+        size++;
+        byte[] sum = AccumulatorUtils.concatDigits(element, get(size - 1), get(size - AccumulatorUtils.d(size)));
         byte[] result = AccumulatorUtils.getSha256(sum);
-        S.set((int) size, result);
-        elements.set((int) size, element);
+        S.set(AccumulatorUtils.zeros(size), result);
+        elements.put((int) size, element);
+        R.put((int) size, result);
     }
 
     @Override
@@ -72,13 +71,13 @@ public class SmartBackLinesAccumulator implements Accumulator {
         S.clear();
         S.add(null);
         elements.clear();
-        elements.add(null);
+        R.clear();
         size = 0;
     }
 
     @Override
     public boolean verify(byte[] R, long i, long j, LinkedList<byte[]> w, byte[] x) {
-        if (i > j) {
+        if (i < j) {
             throw new IllegalArgumentException("Third less than second");
         }
         if (w.size() < 3) {
@@ -87,11 +86,11 @@ public class SmartBackLinesAccumulator implements Accumulator {
         byte[] it = w.removeFirst();
         byte[] R_previous = w.removeFirst();
         byte[] R_pred = w.removeFirst();
-        if (AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, R_previous, R_pred)) != R) {
+        if (!Arrays.equals(AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, R_previous, R_pred)), R)) {
             return false;
         }
         if (i == j) {
-            return it == x;
+            return Arrays.equals(it, x);
         } else {
             if (AccumulatorUtils.pred(i) >= j) {
                 return verify(R_pred, AccumulatorUtils.pred(i), j, w, x);
@@ -112,8 +111,8 @@ public class SmartBackLinesAccumulator implements Accumulator {
             throw new IllegalArgumentException("Second argument more than first");
         }
         answer.add(elements.get((int) j));
-        answer.add(S.get((int) (j - 1)));
-        answer.add(S.get((int) AccumulatorUtils.pred(j)));
+        answer.add(R.get((int) (j - 1)));
+        answer.add(R.get((int) AccumulatorUtils.pred(j)));
         if (j > i) {
             if (AccumulatorUtils.pred(j) >= i) {
                 prove(i, AccumulatorUtils.pred(j), answer);
