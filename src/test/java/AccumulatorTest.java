@@ -52,11 +52,24 @@ public class AccumulatorTest {
     @Test
     @Order(3)
     public void oneElementTest() {
-        byte[] test = Util.generateRandomByte(10);
+        Set<byte[]> setTests = new HashSet<>();
+        ArrayList<byte[]> tests = new ArrayList<>();
+        byte[] test = Util.generateRandomByte(Util.generateInRange(2, 10));
+        for (int i = 0; i < 100; i++) {
+            while (setTests.contains(test)) {
+                test = Util.generateRandomByte(Util.generateInRange(2, 10));
+            }
+            setTests.add(test);
+            tests.add(test);
+        }
         for (Accumulator accumulator : accumulators) {
-            accumulator.add(test);
-            LinkedList<byte[]> prove = accumulator.prove(1);
-            assertTrue(accumulator.verify(accumulator.get(accumulator.size()), accumulator.size(), 1, prove, test));
+            for (byte[] s : tests) {
+                accumulator.add(s);
+            }
+            for (int j = 1; j < tests.size(); j++) {
+                LinkedList<byte[]> prove = accumulator.prove(j);
+                assertTrue(accumulator.verify(accumulator.get(accumulator.size()), accumulator.size(), j, prove, tests.get(j - 1)));
+            }
         }
     }
 }

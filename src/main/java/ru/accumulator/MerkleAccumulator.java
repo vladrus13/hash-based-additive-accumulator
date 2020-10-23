@@ -141,7 +141,7 @@ public class MerkleAccumulator implements Accumulator {
      * @param answer list with answer
      */
     public void prove(long j, long i, LinkedList<byte[]> answer) {
-        if (!(size <= j && j <= i)) {
+        if (!(1 <= j && j <= i)) {
             throw new IllegalArgumentException("Size less than first second argument or second less than first");
         }
         MerkleTree previous = makeTree(i - 1);
