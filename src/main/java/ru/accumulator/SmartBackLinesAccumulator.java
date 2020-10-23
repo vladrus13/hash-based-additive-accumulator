@@ -111,7 +111,9 @@ public class SmartBackLinesAccumulator implements Accumulator {
         if (i > j) {
             throw new IllegalArgumentException("Second argument more than first");
         }
-        answer.addAll(List.of(elements.get((int) j), S.get((int) (j - 1)), S.get((int) AccumulatorUtils.pred(j))));
+        answer.add(elements.get((int) j));
+        answer.add(S.get((int) (j - 1)));
+        answer.add(S.get((int) AccumulatorUtils.pred(j)));
         if (j > i) {
             if (AccumulatorUtils.pred(j) >= i) {
                 prove(i, AccumulatorUtils.pred(j), answer);
