@@ -4,30 +4,30 @@ import java.security.MessageDigest;
 import java.util.Base64;
 
 public class AccumulatorUtils {
-    public static int max_leq_pow2(int n) {
-        int ans = 1;
-        while ((ans << 1) <= n) {
-            ans <<= 1;
+    public static int maxNotLargerPowerOfTwo(int number) {
+        int result = 1;
+        while (2 * result <= number) {
+            result *= 2;
         }
-        return ans;
+        return result;
     }
 
     //Return the maximum power of two that divides n. Return 0 for n == 0."""
-    public static int d(int n) {
-        return n & (-n);
+    public static int maxDividingPowerOfTwo(int number) {
+        return number & (-number);
     }
 
-    public static int zeros(int n) {
-        int ans = 0;
-        while ((n & 1) == 0) {
-            n /= 2;
-            ans++;
+    public static int lastZeroCount(int number) {
+        int result = 0;
+        while (number % 2 == 0) {
+            number /= 2;
+            result++;
         }
-        return ans;
+        return result;
     }
 
-    public static int pred(int n) {
-        return n - d(n);
+    public static int predecessor(int number) {
+        return number - maxDividingPowerOfTwo(number);
     }
 
     public static int hook_index(int n, int t) {
@@ -41,8 +41,8 @@ public class AccumulatorUtils {
     }
 
     public static int rpred(int i, int n) {
-        while (pred(i) >= n) {
-            i = pred(i);
+        while (predecessor(i) >= n) {
+            i = predecessor(i);
         }
         return i;
     }
