@@ -9,8 +9,6 @@ import java.util.List;
 
 public class MerkleTree {
     List<byte[]> hashed_data;
-    List<byte[]> original_data;
-    int capacity;
 
     public MerkleTree(List<byte[]> source) {
         if (source == null || source.size() == 0) {
@@ -18,10 +16,8 @@ public class MerkleTree {
             return;
         }
 
-        original_data = new ArrayList<>(source);
         int size = AccumulatorUtils.maxNotLargerPowerOfTwo(4 * source.size() - 1);
-        //assert (size/2 >= source.size());
-        capacity = source.size();
+        assert (size/2 >= source.size());
         size--;
 
         hashed_data = new ArrayList<>(Collections.nCopies(size, null));
@@ -34,14 +30,10 @@ public class MerkleTree {
     }
 
     public MerkleTree() {
-        capacity = 0;
-        original_data = new ArrayList<>();
         hashed_data = new ArrayList<>(Collections.nCopies(1, null));
     }
 
     public void clear() {
-        capacity = 0;
-        original_data = new ArrayList<>();
         hashed_data = new ArrayList<>(Collections.nCopies(1, null));
     }
 
@@ -64,22 +56,12 @@ public class MerkleTree {
         while (checkCapacity(index)) {
             expand();
         }
-        if (index == original_data.size()) {
-            original_data.add(value);
-        } else {
-            if (index > original_data.size()) {
-                throw new RuntimeException();
-            }
-            original_data.set(index, value);
-        }
         hashed_data.set(index + hashed_data.size() / 2, getLeafHash(value));
         for (int currentState = (index + hashed_data.size() / 2 - 1) / 2; ;
              currentState = (currentState - 1) / 2) {
             hashed_data.set(currentState, getVertexesHash(currentState));
             if (currentState == 0) break;
         }
-
-        capacity++;
     }
 
     public byte[] getRoot() {
@@ -104,9 +86,9 @@ public class MerkleTree {
      */
     public List<byte[]> proof(int index) {
         List<byte[]> ans = new ArrayList<>();
-        // ans.add(getLeaf(index));
+        //ans.add(getLeaf(index));
 
-        for (int currentState = index; currentState != 0;
+        for (int currentState = index + hashed_data.size() / 2; currentState != 0;
              currentState = (currentState - 1) / 2) {
             ans.add(hashed_data.get(getNeighbour(currentState)));
         }

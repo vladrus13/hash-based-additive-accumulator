@@ -110,6 +110,7 @@ public class MerkleAccumulator implements Accumulator {
         }
         byte[] it = w.removeFirst();
         byte[] M_root = w.removeFirst();
+        byte[] temr = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, M_root));
         if (!Arrays.equals(AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, M_root)), R)) {
             return false;
         }
@@ -120,8 +121,13 @@ public class MerkleAccumulator implements Accumulator {
             int leaf = AccumulatorUtils.lastZeroCount(i_n);
             byte[] real_leaf = w.removeFirst();
             int merkle_size = AccumulatorUtils.maxNotLargerPowerOfTwo(i - 1); // TODO: Really?
+            int r = 0, ans = 1;
+            while (ans != merkle_size) {
+                ans *= 2;
+                r++;
+            }
             ArrayList<byte[]> merkle = new ArrayList<>();
-            for (int k = 0; k < merkle_size - 1; k++) {
+            for (int k = 0; k < r; k++) {
                 merkle.add(w.removeFirst());
             }
             if (!MerkleTree.verify(M_root, leaf, real_leaf, merkle)) {
