@@ -42,7 +42,7 @@ public class SmartBackLinesAccumulator implements Accumulator {
         if (position == 0) {
             return null;
         } else {
-            return S.get(AccumulatorUtils.zeros(position));
+            return S.get(AccumulatorUtils.lastZeroCount(position));
         }
     }
 
@@ -52,9 +52,9 @@ public class SmartBackLinesAccumulator implements Accumulator {
             S.add(null);
         }
         size++;
-        byte[] sum = AccumulatorUtils.concatDigits(element, get(size - 1), get(size - AccumulatorUtils.d(size)));
+        byte[] sum = AccumulatorUtils.concatDigits(element, get(size - 1), get(size - AccumulatorUtils.maxDividingPowerOfTwo(size)));
         byte[] result = AccumulatorUtils.getSha256(sum);
-        S.set(AccumulatorUtils.zeros(size), result);
+        S.set(AccumulatorUtils.lastZeroCount(size), result);
         elements.put( size, element);
         R.put( size, result);
     }
@@ -92,8 +92,8 @@ public class SmartBackLinesAccumulator implements Accumulator {
         if (i == j) {
             return Arrays.equals(it, x);
         } else {
-            if (AccumulatorUtils.pred(i) >= j) {
-                return verify(R_pred, AccumulatorUtils.pred(i), j, w, x);
+            if (AccumulatorUtils.predecessor(i) >= j) {
+                return verify(R_pred, AccumulatorUtils.predecessor(i), j, w, x);
             } else {
                 return verify(R_previous, i - 1, j, w, x);
             }
@@ -113,10 +113,10 @@ public class SmartBackLinesAccumulator implements Accumulator {
         }
         answer.add(elements.get( j));
         answer.add(R.get( (j - 1)));
-        answer.add(R.get( AccumulatorUtils.pred(j)));
+        answer.add(R.get( AccumulatorUtils.predecessor(j)));
         if (j > i) {
-            if (AccumulatorUtils.pred(j) >= i) {
-                prove(i, AccumulatorUtils.pred(j), answer);
+            if (AccumulatorUtils.predecessor(j) >= i) {
+                prove(i, AccumulatorUtils.predecessor(j), answer);
             } else {
                 prove(i, j - 1, answer);
             }
