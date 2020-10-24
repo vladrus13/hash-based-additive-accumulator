@@ -45,7 +45,7 @@ public class MerkleAccumulator implements Accumulator {
         if (position == 0) {
             return null;
         } else {
-            return S.getLeaf(AccumulatorUtils.zeros(position));
+            return S.getLeaf(AccumulatorUtils.lastZeroCount(position));
         }
     }
 
@@ -54,7 +54,7 @@ public class MerkleAccumulator implements Accumulator {
         byte[] root = S.getRoot();
         size++;
         byte[] result = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(element, root));
-        S.set(AccumulatorUtils.zeros(size), result);
+        S.set(AccumulatorUtils.lastZeroCount(size), result);
         elements.put(size, element);
         R.put(size, result);
     }
@@ -79,7 +79,7 @@ public class MerkleAccumulator implements Accumulator {
             if (index > size) {
                 S.add(R.get( index));
             } else {
-                S.add(this.S.getLeaf(AccumulatorUtils.zeros(index)));
+                S.add(this.S.getLeaf(AccumulatorUtils.lastZeroCount(index)));
             }
         }
         return new MerkleTree(S);
@@ -117,9 +117,9 @@ public class MerkleAccumulator implements Accumulator {
             return Arrays.equals(it, x);
         } else {
             int i_n = AccumulatorUtils.rpred(i - 1, j);
-            int leaf = AccumulatorUtils.zeros(i_n);
+            int leaf = AccumulatorUtils.lastZeroCount(i_n);
             byte[] real_leaf = w.removeFirst();
-            int merkle_size = AccumulatorUtils.max_leq_pow2(i - 1); // TODO: Really?
+            int merkle_size = AccumulatorUtils.maxNotLargerPowerOfTwo(i - 1); // TODO: Really?
             ArrayList<byte[]> merkle = new ArrayList<>();
             for (int k = 0; k < merkle_size; k++) {
                 merkle.add(w.removeFirst());
@@ -147,7 +147,7 @@ public class MerkleAccumulator implements Accumulator {
         answer.add(previous.getRoot());
         if (i > j) {
             int i_next = AccumulatorUtils.rpred(i - 1, j);
-            int leaf = AccumulatorUtils.zeros(i_next);
+            int leaf = AccumulatorUtils.lastZeroCount(i_next);
             answer.add(previous.getLeaf( leaf));
             answer.addAll(new ArrayList<>(previous.proof( leaf)));
             prove(j, i_next, answer);
