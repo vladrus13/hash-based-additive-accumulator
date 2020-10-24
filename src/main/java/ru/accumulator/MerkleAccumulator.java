@@ -148,7 +148,7 @@ public class MerkleAccumulator implements Accumulator {
         if (i > j) {
             int i_next = AccumulatorUtils.rpred(i - 1, j);
             int leaf = AccumulatorUtils.lastZeroCount(i_next);
-            answer.add(previous.getLeaf(leaf));
+            answer.add(previous.getOriginal(leaf));
             answer.addAll(new ArrayList<>(previous.proof(leaf)));
             prove(i_next, j, answer);
         }

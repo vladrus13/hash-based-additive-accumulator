@@ -16,7 +16,7 @@ public class AccumulatorTest {
     @BeforeAll
     public static void beforeAll() {
         // TODO: add SmartBackLinesAccumulator
-        accumulators = new ArrayList<>(List.of(new MerkleAccumulator()));
+        accumulators = new ArrayList<>(List.of(new MerkleAccumulator(), new SmartBackLinesAccumulator()));
     }
 
     @BeforeEach

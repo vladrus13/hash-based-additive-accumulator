@@ -3,6 +3,7 @@ package ru.accumulator;
 import ru.util.AccumulatorUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -136,7 +137,7 @@ public class MerkleTree {
             }
             index /= 2;
         }
-        return rootHash == current;
+        return Arrays.equals(rootHash, current);
     }
 
     private int getNeighbour(int index) {
