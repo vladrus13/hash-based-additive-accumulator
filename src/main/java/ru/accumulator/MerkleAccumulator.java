@@ -77,7 +77,7 @@ public class MerkleAccumulator implements Accumulator {
         }
         for (int index : I) {
             if (index > size) {
-                S.add(R.get( index));
+                S.add(R.get(index));
             } else {
                 S.add(this.S.getLeaf(AccumulatorUtils.lastZeroCount(index)));
             }
@@ -148,8 +148,8 @@ public class MerkleAccumulator implements Accumulator {
         if (i > j) {
             int i_next = AccumulatorUtils.rpred(i - 1, j);
             int leaf = AccumulatorUtils.lastZeroCount(i_next);
-            answer.add(previous.getLeaf( leaf));
-            answer.addAll(new ArrayList<>(previous.proof( leaf)));
+            answer.add(previous.getLeaf(leaf));
+            answer.addAll(new ArrayList<>(previous.proof(leaf)));
             prove(j, i_next, answer);
         }
     }

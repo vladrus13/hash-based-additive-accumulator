@@ -18,7 +18,7 @@ public class MerkleTree {
         }
 
         original_data = new ArrayList<>(source);
-        int size =  AccumulatorUtils.maxNotLargerPowerOfTwo(4 * source.size() - 1);
+        int size = AccumulatorUtils.maxNotLargerPowerOfTwo(4 * source.size() - 1);
         //assert (size/2 >= source.size());
         capacity = source.size();
         size--;
@@ -48,7 +48,7 @@ public class MerkleTree {
     private void expand() {
         List<byte[]> new_storage = new ArrayList<>(Collections.nCopies(2 * hashed_data.size() + 1, null));
         for (int i = 0; i < hashed_data.size(); i++) {
-            new_storage.set(i +  AccumulatorUtils.maxNotLargerPowerOfTwo( i + 1), hashed_data.get(i));
+            new_storage.set(i + AccumulatorUtils.maxNotLargerPowerOfTwo(i + 1), hashed_data.get(i));
         }
 
         new_storage.set(0, getVertexesHash(0));
@@ -63,8 +63,14 @@ public class MerkleTree {
         while (checkCapacity(index)) {
             expand();
         }
-
-        original_data.add(value);
+        if (index == original_data.size()) {
+            original_data.add(value);
+        } else {
+            if (index > original_data.size()) {
+                throw new RuntimeException();
+            }
+            original_data.set(index, value);
+        }
         hashed_data.set(index + hashed_data.size() / 2, getLeafHash(value));
         for (int currentState = (index + hashed_data.size() / 2 - 1) / 2; ;
              currentState = (currentState - 1) / 2) {
