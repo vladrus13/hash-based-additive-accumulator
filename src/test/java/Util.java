@@ -7,7 +7,7 @@ public class Util {
     /**
      * Random
      */
-    private static Random random = new Random(System.currentTimeMillis());
+    private static final Random random = new Random(System.currentTimeMillis());
     /**
      * Alphabet for Base64
      */

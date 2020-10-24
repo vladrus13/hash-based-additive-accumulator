@@ -2,10 +2,7 @@ package ru.accumulator;
 
 import ru.util.AccumulatorUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Merkle-tree realization of accumulator
@@ -22,11 +19,11 @@ public class MerkleAccumulator implements Accumulator {
     /**
      * Hashing elements
      */
-    private final ArrayList<byte[]> R;
+    private final Map<Integer, byte[]> R;
     /**
      * Elements
      */
-    private final ArrayList<byte[]> elements;
+    private final Map<Integer, byte[]> elements;
 
     /**
      * Constructor for empty accumulator
@@ -34,8 +31,8 @@ public class MerkleAccumulator implements Accumulator {
     public MerkleAccumulator() {
         size = 0;
         S = new MerkleTree();
-        R = new ArrayList<>();
-        elements = new ArrayList<>();
+        R = new HashMap<>();
+        elements = new HashMap<>();
     }
 
     @Override
@@ -58,8 +55,8 @@ public class MerkleAccumulator implements Accumulator {
         size++;
         byte[] result = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(element, root));
         S.set(AccumulatorUtils.zeros(size), result);
-        elements.add(element);
-        R.add(result);
+        elements.put(size, element);
+        R.put(size, result);
     }
 
     /**
@@ -91,7 +88,7 @@ public class MerkleAccumulator implements Accumulator {
     @Override
     public LinkedList<byte[]> prove(int position) {
         LinkedList<byte[]> answer = new LinkedList<>();
-        prove(position, size, answer);
+        prove(size, position, answer);
         return answer;
     }
 
@@ -101,7 +98,6 @@ public class MerkleAccumulator implements Accumulator {
         S.clear();
         R.clear();
         elements.clear();
-        elements.add(null);
     }
 
     @Override
@@ -142,12 +138,13 @@ public class MerkleAccumulator implements Accumulator {
      * @param i      position finish
      * @param answer list with answer
      */
-    public void prove(int j, int i, LinkedList<byte[]> answer) {
+    public void prove(int i, int j, LinkedList<byte[]> answer) {
         if (j > i) {
             throw new IllegalArgumentException("Size less than first second argument or second less than first");
         }
         MerkleTree previous = makeTree(i - 1);
-        answer.addAll(List.of(elements.get( i), previous.getRoot()));
+        answer.add(elements.get(i));
+        answer.add(previous.getRoot());
         if (i > j) {
             int i_next = AccumulatorUtils.rpred(i - 1, j);
             int leaf = AccumulatorUtils.zeros(i_next);
