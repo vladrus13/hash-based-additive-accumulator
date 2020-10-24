@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Merkle-tree realization of accumulator
@@ -49,16 +48,16 @@ public class MerkleAccumulator implements Accumulator {
         if (position == 0) {
             return null;
         } else {
-            return AccumulatorUtils.toByteArray(S.getLeaf(AccumulatorUtils.zeros(position)));
+            return S.getLeaf(AccumulatorUtils.zeros(position));
         }
     }
 
     @Override
     public void add(byte[] element) {
-        byte[] root = AccumulatorUtils.toByteArray(S.getRoot());
+        byte[] root = S.getRoot();
         size++;
         byte[] result = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(element, root));
-        S.set(AccumulatorUtils.zeros(size), AccumulatorUtils.toString(result));
+        S.set(AccumulatorUtils.zeros(size), result);
         elements.add(element);
         R.add(result);
     }
@@ -71,7 +70,7 @@ public class MerkleAccumulator implements Accumulator {
      */
     private MerkleTree makeTree(long n) {
         ArrayList<Long> I = new ArrayList<>();
-        ArrayList<String> S = new ArrayList<>();
+        ArrayList<byte[]> S = new ArrayList<>();
         long i = 0;
         long t = 1;
         while (t <= n) {
@@ -81,7 +80,7 @@ public class MerkleAccumulator implements Accumulator {
         }
         for (long index : I) {
             if (index > size) {
-                S.add(AccumulatorUtils.toString(R.get((int) index)));
+                S.add(R.get((int) index));
             } else {
                 S.add(this.S.getLeaf(AccumulatorUtils.zeros(index)));
             }
@@ -125,9 +124,9 @@ public class MerkleAccumulator implements Accumulator {
             long leaf = AccumulatorUtils.zeros(i_n);
             byte[] real_leaf = w.removeFirst();
             long merkle_size = AccumulatorUtils.max_leq_pow2(i - 1); // TODO: Really?
-            ArrayList<String> merkle = new ArrayList<>();
+            ArrayList<byte[]> merkle = new ArrayList<>();
             for (int k = 0; k < merkle_size; k++) {
-                merkle.add(AccumulatorUtils.toString(w.removeFirst()));
+                merkle.add(w.removeFirst());
             }
             if (!MerkleTree.verify(M_root, leaf, real_leaf, merkle)) {
                 return false;
@@ -148,12 +147,12 @@ public class MerkleAccumulator implements Accumulator {
             throw new IllegalArgumentException("Size less than first second argument or second less than first");
         }
         MerkleTree previous = makeTree(i - 1);
-        answer.addAll(List.of(elements.get((int) i), AccumulatorUtils.toByteArray(previous.getRoot())));
+        answer.addAll(List.of(elements.get((int) i), previous.getRoot()));
         if (i > j) {
             long i_next = AccumulatorUtils.rpred(i - 1, j);
             long leaf = AccumulatorUtils.zeros(i_next);
-            answer.add(AccumulatorUtils.toByteArray(previous.getLeaf((int) leaf)));
-            answer.addAll(previous.proof((int) leaf).stream().map(AccumulatorUtils::toByteArray).collect(Collectors.toList()));
+            answer.add(previous.getLeaf((int) leaf));
+            answer.addAll(new ArrayList<>(previous.proof((int) leaf)));
             prove(j, i_next, answer);
         }
     }
