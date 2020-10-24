@@ -14,7 +14,7 @@ public class MerkleAccumulator implements Accumulator {
     /**
      * Size of structure
      */
-    private long size;
+    private int size;
     /**
      * Merkle tree
      */
@@ -39,12 +39,12 @@ public class MerkleAccumulator implements Accumulator {
     }
 
     @Override
-    public long size() {
+    public int size() {
         return size;
     }
 
     @Override
-    public byte[] get(long position) {
+    public byte[] get(int position) {
         if (position == 0) {
             return null;
         } else {
@@ -68,19 +68,19 @@ public class MerkleAccumulator implements Accumulator {
      * @param n position
      * @return {@link MerkleTree}
      */
-    private MerkleTree makeTree(long n) {
-        ArrayList<Long> I = new ArrayList<>();
+    private MerkleTree makeTree(int n) {
+        ArrayList<Integer> I = new ArrayList<>();
         ArrayList<byte[]> S = new ArrayList<>();
-        long i = 0;
-        long t = 1;
+        int i = 0;
+        int t = 1;
         while (t <= n) {
             I.add(AccumulatorUtils.hook_index(n, i));
             i++;
             t *= 2;
         }
-        for (long index : I) {
+        for (int index : I) {
             if (index > size) {
-                S.add(R.get((int) index));
+                S.add(R.get( index));
             } else {
                 S.add(this.S.getLeaf(AccumulatorUtils.zeros(index)));
             }
@@ -89,7 +89,7 @@ public class MerkleAccumulator implements Accumulator {
     }
 
     @Override
-    public LinkedList<byte[]> prove(long position) {
+    public LinkedList<byte[]> prove(int position) {
         LinkedList<byte[]> answer = new LinkedList<>();
         prove(position, size, answer);
         return answer;
@@ -105,7 +105,7 @@ public class MerkleAccumulator implements Accumulator {
     }
 
     @Override
-    public boolean verify(byte[] R, long i, long j, LinkedList<byte[]> w, byte[] x) {
+    public boolean verify(byte[] R, int i, int j, LinkedList<byte[]> w, byte[] x) {
         if (!(1 <= j && j <= i)) {
             throw new IllegalArgumentException("Third argument less then second, or less than second");
         }
@@ -120,10 +120,10 @@ public class MerkleAccumulator implements Accumulator {
         if (i == j) {
             return Arrays.equals(it, x);
         } else {
-            long i_n = AccumulatorUtils.rpred(i - 1, j);
-            long leaf = AccumulatorUtils.zeros(i_n);
+            int i_n = AccumulatorUtils.rpred(i - 1, j);
+            int leaf = AccumulatorUtils.zeros(i_n);
             byte[] real_leaf = w.removeFirst();
-            long merkle_size = AccumulatorUtils.max_leq_pow2(i - 1); // TODO: Really?
+            int merkle_size = AccumulatorUtils.max_leq_pow2(i - 1); // TODO: Really?
             ArrayList<byte[]> merkle = new ArrayList<>();
             for (int k = 0; k < merkle_size; k++) {
                 merkle.add(w.removeFirst());
@@ -142,17 +142,17 @@ public class MerkleAccumulator implements Accumulator {
      * @param i      position finish
      * @param answer list with answer
      */
-    public void prove(long j, long i, LinkedList<byte[]> answer) {
+    public void prove(int j, int i, LinkedList<byte[]> answer) {
         if (j > i) {
             throw new IllegalArgumentException("Size less than first second argument or second less than first");
         }
         MerkleTree previous = makeTree(i - 1);
-        answer.addAll(List.of(elements.get((int) i), previous.getRoot()));
+        answer.addAll(List.of(elements.get( i), previous.getRoot()));
         if (i > j) {
-            long i_next = AccumulatorUtils.rpred(i - 1, j);
-            long leaf = AccumulatorUtils.zeros(i_next);
-            answer.add(previous.getLeaf((int) leaf));
-            answer.addAll(new ArrayList<>(previous.proof((int) leaf)));
+            int i_next = AccumulatorUtils.rpred(i - 1, j);
+            int leaf = AccumulatorUtils.zeros(i_next);
+            answer.add(previous.getLeaf( leaf));
+            answer.addAll(new ArrayList<>(previous.proof( leaf)));
             prove(j, i_next, answer);
         }
     }

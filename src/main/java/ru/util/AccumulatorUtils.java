@@ -4,8 +4,8 @@ import java.security.MessageDigest;
 import java.util.Base64;
 
 public class AccumulatorUtils {
-    public static long max_leq_pow2(long n) {
-        long ans = 1;
+    public static int max_leq_pow2(int n) {
+        int ans = 1;
         while ((ans << 1) <= n) {
             ans <<= 1;
         }
@@ -13,11 +13,11 @@ public class AccumulatorUtils {
     }
 
     //Return the maximum power of two that divides n. Return 0 for n == 0."""
-    public static long d(long n) {
+    public static int d(int n) {
         return n & (-n);
     }
 
-    public static int zeros(long n) {
+    public static int zeros(int n) {
         int ans = 0;
         while ((n & 1) == 0) {
             n /= 2;
@@ -26,13 +26,13 @@ public class AccumulatorUtils {
         return ans;
     }
 
-    public static long pred(long n) {
+    public static int pred(int n) {
         return n - d(n);
     }
 
-    public static long hook_index(long n, long t) {
-        long d = 1 << t;
-        long r = n & -d;
+    public static int hook_index(int n, int t) {
+        int d = 1 << t;
+        int r = n & -d;
         if ((n & d) != 0) {
             return r;
         } else {
@@ -40,7 +40,7 @@ public class AccumulatorUtils {
         }
     }
 
-    public static long rpred(long i, long n) {
+    public static int rpred(int i, int n) {
         while (pred(i) >= n) {
             i = pred(i);
         }

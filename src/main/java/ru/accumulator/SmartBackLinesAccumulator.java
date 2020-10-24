@@ -11,7 +11,7 @@ public class SmartBackLinesAccumulator implements Accumulator {
     /**
      * Size of structure
      */
-    private long size;
+    private int size;
     /**
      * Hashing elements
      */
@@ -33,12 +33,12 @@ public class SmartBackLinesAccumulator implements Accumulator {
     }
 
     @Override
-    public long size() {
+    public int size() {
         return size;
     }
 
     @Override
-    public byte[] get(long position) {
+    public byte[] get(int position) {
         if (position == 0) {
             return null;
         } else {
@@ -55,12 +55,12 @@ public class SmartBackLinesAccumulator implements Accumulator {
         byte[] sum = AccumulatorUtils.concatDigits(element, get(size - 1), get(size - AccumulatorUtils.d(size)));
         byte[] result = AccumulatorUtils.getSha256(sum);
         S.set(AccumulatorUtils.zeros(size), result);
-        elements.put((int) size, element);
-        R.put((int) size, result);
+        elements.put( size, element);
+        R.put( size, result);
     }
 
     @Override
-    public LinkedList<byte[]> prove(long position) {
+    public LinkedList<byte[]> prove(int position) {
         LinkedList<byte[]> answer = new LinkedList<>();
         prove(position, size, answer);
         return answer;
@@ -76,7 +76,7 @@ public class SmartBackLinesAccumulator implements Accumulator {
     }
 
     @Override
-    public boolean verify(byte[] R, long i, long j, LinkedList<byte[]> w, byte[] x) {
+    public boolean verify(byte[] R, int i, int j, LinkedList<byte[]> w, byte[] x) {
         if (i < j) {
             throw new IllegalArgumentException("Third less than second");
         }
@@ -107,13 +107,13 @@ public class SmartBackLinesAccumulator implements Accumulator {
      * @param i      position finish
      * @param answer list with answer
      */
-    private void prove(long i, long j, LinkedList<byte[]> answer) {
+    private void prove(int i, int j, LinkedList<byte[]> answer) {
         if (i > j) {
             throw new IllegalArgumentException("Second argument more than first");
         }
-        answer.add(elements.get((int) j));
-        answer.add(R.get((int) (j - 1)));
-        answer.add(R.get((int) AccumulatorUtils.pred(j)));
+        answer.add(elements.get( j));
+        answer.add(R.get( (j - 1)));
+        answer.add(R.get( AccumulatorUtils.pred(j)));
         if (j > i) {
             if (AccumulatorUtils.pred(j) >= i) {
                 prove(i, AccumulatorUtils.pred(j), answer);

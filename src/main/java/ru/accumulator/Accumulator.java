@@ -12,14 +12,14 @@ public interface Accumulator {
      * Get size
      * @return size of accumulator
      */
-    long size();
+    int size();
 
     /**
      * Get element on position
      * @param position position
      * @return element
      */
-    byte[] get(long position);
+    byte[] get(int position);
 
     /**
      * Add element to accumulator
@@ -32,12 +32,12 @@ public interface Accumulator {
      * @param position position
      * @return list of proves
      */
-    LinkedList<byte[]> prove(long position);
+    LinkedList<byte[]> prove(int position);
 
     /**
      * Clear all accumulator
      */
     void clear();
 
-    boolean verify(byte[] R, long i, long j, LinkedList<byte[]> w, byte[] x);
+    boolean verify(byte[] R, int i, int j, LinkedList<byte[]> w, byte[] x);
 }
