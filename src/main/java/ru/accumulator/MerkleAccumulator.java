@@ -121,7 +121,7 @@ public class MerkleAccumulator implements Accumulator {
             byte[] real_leaf = w.removeFirst();
             int merkle_size = AccumulatorUtils.maxNotLargerPowerOfTwo(i - 1); // TODO: Really?
             ArrayList<byte[]> merkle = new ArrayList<>();
-            for (int k = 0; k < merkle_size; k++) {
+            for (int k = 0; k < merkle_size - 1; k++) {
                 merkle.add(w.removeFirst());
             }
             if (!MerkleTree.verify(M_root, leaf, real_leaf, merkle)) {
