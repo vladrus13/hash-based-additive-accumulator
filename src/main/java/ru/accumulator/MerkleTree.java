@@ -91,7 +91,8 @@ public class MerkleTree {
     }
 
     public byte[] getOriginal(int index) {
-        return original_data.get(index);
+        return getLeaf(index);
+        //        return original_data.get(index);
     }
 
 
@@ -103,9 +104,9 @@ public class MerkleTree {
      */
     public List<byte[]> proof(int index) {
         List<byte[]> ans = new ArrayList<>();
-        ans.add(getLeaf(index));
+        // ans.add(getLeaf(index));
 
-        for (int currentState = index + hashed_data.size() / 2; currentState != 0;
+        for (int currentState = index; currentState != 0;
              currentState = (currentState - 1) / 2) {
             ans.add(hashed_data.get(getNeighbour(currentState)));
         }
@@ -146,7 +147,8 @@ public class MerkleTree {
     }
 
     private byte[] getLeafHash(byte[] value) {
-        return AccumulatorUtils.getSha256(value);
+        return value;
+//        return AccumulatorUtils.getSha256(value);
     }
 
     private byte[] getVertexesHash(int index) {
