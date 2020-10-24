@@ -18,7 +18,7 @@ public class MerkleTree {
             return;
         }
 
-        original_data = source;
+        original_data = new ArrayList<>(source);
         int size = (int) AccumulatorUtils.max_leq_pow2(4 * source.size() - 1);
         //assert (size/2 >= source.size());
         capacity = source.size();
@@ -34,13 +34,13 @@ public class MerkleTree {
 
     public MerkleTree() {
         capacity = 0;
-        original_data = Collections.emptyList();
+        original_data = new ArrayList<>();
         hashed_data = new ArrayList<>(Collections.nCopies(1, ""));
     }
 
     public void clear() {
         capacity = 0;
-        original_data = Collections.emptyList();
+        original_data = new ArrayList<>();
         hashed_data = new ArrayList<>(Collections.nCopies(1, ""));
     }
 
