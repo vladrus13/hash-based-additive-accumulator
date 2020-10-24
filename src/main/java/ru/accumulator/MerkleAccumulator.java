@@ -45,7 +45,7 @@ public class MerkleAccumulator implements Accumulator {
         if (position == 0) {
             return null;
         } else {
-            return S.getLeaf(AccumulatorUtils.lastZeroCount(position));
+            return S.getOriginal(AccumulatorUtils.lastZeroCount(position));
         }
     }
 
