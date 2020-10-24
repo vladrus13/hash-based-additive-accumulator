@@ -76,6 +76,9 @@ public class AccumulatorUtils {
     }
 
     public static byte[] getSha256(byte[] value) {
+        if (value == null) {
+            return null;
+        }
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(value);
