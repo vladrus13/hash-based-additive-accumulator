@@ -15,7 +15,6 @@ public class AccumulatorTest {
 
     @BeforeAll
     public static void beforeAll() {
-        // TODO: add SmartBackLinesAccumulator
         accumulators = new ArrayList<>(List.of(new MerkleAccumulator(), new SmartBackLinesAccumulator()));
     }
 
@@ -80,7 +79,7 @@ public class AccumulatorTest {
     @Order(5)
     public void tenElementsTest() {
         ArrayList<byte[]> input = new ArrayList<>();
-        for (int i = 1; i < 12; i++) {
+        for (int i = 1; i < 11; i++) {
             input.add(Util.generateRandomByte(i));
         }
         for (Accumulator accumulator : accumulators) {
