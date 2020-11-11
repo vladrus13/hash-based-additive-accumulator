@@ -12,6 +12,16 @@ public class AccumulatorUtils {
         return result;
     }
 
+    public static int maxNotLargerDegreeOfTwo(int number) {
+        int res = 0;
+        int cur = 1;
+        while (2 * cur <= number) {
+            cur <<= 1;
+            res++;
+        }
+        return res;
+    }
+
     //Return the maximum power of two that divides n. Return 0 for n == 0."""
     public static int maxDividingPowerOfTwo(int number) {
         return number & (-number);

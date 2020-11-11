@@ -120,7 +120,7 @@ public class MerkleAccumulator implements Accumulator {
             int i_n = AccumulatorUtils.rpred(i - 1, j);
             int leaf = AccumulatorUtils.lastZeroCount(i_n);
             byte[] real_leaf = w.removeFirst();
-            int merkle_size = AccumulatorUtils.maxNotLargerPowerOfTwo(i - 1); // TODO: Really?
+            int merkle_size = AccumulatorUtils.maxNotLargerDegreeOfTwo(i - 1); // TODO: Really?
             int r = 0, ans = 1;
             while (ans != merkle_size) {
                 ans *= 2;

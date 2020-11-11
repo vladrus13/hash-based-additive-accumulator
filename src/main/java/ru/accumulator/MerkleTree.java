@@ -9,6 +9,7 @@ import java.util.List;
 
 public class MerkleTree {
     List<byte[]> hashed_data;
+    int first_leaf;
 
     public MerkleTree(List<byte[]> source) {
         if (source == null || source.size() == 0) {
@@ -19,22 +20,26 @@ public class MerkleTree {
         int size = AccumulatorUtils.maxNotLargerPowerOfTwo(4 * source.size() - 1);
         assert (size / 2 >= source.size());
         size--;
+        first_leaf = size / 2;
 
         hashed_data = new ArrayList<>(Collections.nCopies(size, null));
         for (int i = 0; i < source.size(); i++) {
-            hashed_data.set(i + size / 2, getLeafHash(source.get(i)));
+            hashed_data.set(i + first_leaf, getLeafHash(source.get(i)));
         }
-        for (int i = size / 2 - 1; i >= 0; i--) {
+        for (int i = first_leaf - 1; i >= 0; i--) {
             hashed_data.set(i, getVertexesHash(i));
         }
     }
 
+    // empty Merkle Tree provides Tree for 2 vertexes
     public MerkleTree() {
         hashed_data = new ArrayList<>(Collections.nCopies(3, null));
+        first_leaf = 1;
     }
 
     public void clear() {
         hashed_data = new ArrayList<>(Collections.nCopies(3, null));
+        first_leaf = 1;
     }
 
 
@@ -44,19 +49,20 @@ public class MerkleTree {
             new_storage.set(i + AccumulatorUtils.maxNotLargerPowerOfTwo(i + 1), hashed_data.get(i));
         }
         hashed_data = new_storage;
+        first_leaf = 2 * first_leaf + 1;
         hashed_data.set(0, getVertexesHash(0));
     }
 
     private boolean checkCapacity(int index) {
-        return index + hashed_data.size() / 2 >= hashed_data.size();
+        return index + first_leaf >= hashed_data.size();
     }
 
     public void set(int index, byte[] value) {
         while (checkCapacity(index)) {
             expand();
         }
-        hashed_data.set(index + hashed_data.size() / 2, getLeafHash(value));
-        for (int currentState = (index + hashed_data.size() / 2 - 1) / 2; ;
+        hashed_data.set(index + first_leaf, getLeafHash(value));
+        for (int currentState = (index + first_leaf - 1) / 2; ;
              currentState = (currentState - 1) / 2) {
             hashed_data.set(currentState, getVertexesHash(currentState));
             if (currentState == 0) break;
@@ -68,7 +74,7 @@ public class MerkleTree {
     }
 
     public byte[] getLeaf(int index) {
-        return hashed_data.get(index + hashed_data.size() / 2);
+        return hashed_data.get(index + first_leaf);
     }
 
     public byte[] getOriginal(int index) {
@@ -87,7 +93,7 @@ public class MerkleTree {
         List<byte[]> ans = new ArrayList<>();
         //ans.add(getLeaf(index));
 
-        for (int currentState = index + hashed_data.size() / 2; currentState != 0;
+        for (int currentState = index + first_leaf; currentState != 0;
              currentState = (currentState - 1) / 2) {
             ans.add(hashed_data.get(getNeighbour(currentState)));
         }
@@ -133,7 +139,7 @@ public class MerkleTree {
     }
 
     private byte[] getVertexesHash(int index) {
-        if (index < hashed_data.size() / 2) {
+        if (index < first_leaf) {
             return AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(
                     hashed_data.get(2 * index + 1), hashed_data.get(2 * index + 2)));
         } else return hashed_data.get(index);
