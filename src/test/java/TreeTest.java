@@ -58,9 +58,9 @@ public class TreeTest {
             tree.set(i, test);
             strings.add(test);
         }
-
+        byte[] root = tree.getRoot();
         for (int i = 0; i < 10000; i++) {
-            assertTrue(tree.verify(tree.getRoot(), i, tree.proof(i)));
+            assertTrue(tree.verify(root, i, tree.proof(i)));
         }
     }
 }

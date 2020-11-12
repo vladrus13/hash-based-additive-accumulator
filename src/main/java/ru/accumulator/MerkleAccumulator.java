@@ -132,8 +132,8 @@ public class MerkleAccumulator implements Accumulator<Prove> {
     /**
      * Get proves from i to j
      *
-     * @param j      position start
-     * @param i      position finish
+     * @param j position start
+     * @param i position finish
      */
     private LinkedList<Prove> prove(int i, int j) {
         if (j > i) {
@@ -150,10 +150,10 @@ public class MerkleAccumulator implements Accumulator<Prove> {
             int leaf = AccumulatorUtils.lastZeroCount(i_next);
             prove.w.addAll(previous.proof(leaf));
             LinkedList<Prove> prove1 = new LinkedList<>(prove(i_next, j));
-            prove1.add(prove);
+            prove1.add(0, prove);
             return prove1;
         } else {
-            return new LinkedList<>(List.of(prove));
+            return new LinkedList<>(Collections.singleton(prove));
         }
     }
 }

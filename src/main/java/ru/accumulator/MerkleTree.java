@@ -33,13 +33,13 @@ public class MerkleTree {
 
     // empty Merkle Tree provides Tree for 2 vertexes
     public MerkleTree() {
-        hashed_data = new ArrayList<>(Collections.nCopies(3, null));
-        first_leaf = 1;
+        hashed_data = new ArrayList<>(Collections.singleton(null));
+        first_leaf = 0;
     }
 
     public void clear() {
-        hashed_data = new ArrayList<>(Collections.nCopies(3, null));
-        first_leaf = 1;
+        hashed_data = new ArrayList<>(Collections.singleton(null));
+        first_leaf = 0;
     }
 
 
