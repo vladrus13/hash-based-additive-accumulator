@@ -1,13 +1,14 @@
 package ru.accumulator;
 
 import ru.util.AccumulatorUtils;
+import ru.util.Prove;
 
 import java.util.*;
 
 /**
  * Smart backlines realization of accumulator
  */
-public class SmartBackLinesAccumulator implements Accumulator {
+public class SmartBackLinesAccumulator implements Accumulator<byte[]> {
     /**
      * Size of structure
      */
@@ -76,17 +77,16 @@ public class SmartBackLinesAccumulator implements Accumulator {
     }
 
     @Override
-    public boolean verify(byte[] R, int i, int j, Object ww, byte[] x) {
-        LinkedList<byte[]> w = (LinkedList<byte[]>) ww;
+    public boolean verify(byte[] R, int i, int j, LinkedList<byte[]> ww, byte[] x) {
         if (i < j) {
             throw new IllegalArgumentException("Third less than second");
         }
-        if (w.size() < 3) {
+        if (ww.size() < 3) {
             throw new IllegalArgumentException("Size of hash-array less than three");
         }
-        byte[] it = w.removeFirst();
-        byte[] R_previous = w.removeFirst();
-        byte[] R_pred = w.removeFirst();
+        byte[] it = ww.removeFirst();
+        byte[] R_previous = ww.removeFirst();
+        byte[] R_pred = ww.removeFirst();
         if (!Arrays.equals(AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, R_previous, R_pred)), R)) {
             return false;
         }
@@ -94,9 +94,9 @@ public class SmartBackLinesAccumulator implements Accumulator {
             return Arrays.equals(it, x);
         } else {
             if (AccumulatorUtils.predecessor(i) >= j) {
-                return verify(R_pred, AccumulatorUtils.predecessor(i), j, w, x);
+                return verify(R_pred, AccumulatorUtils.predecessor(i), j, ww, x);
             } else {
-                return verify(R_previous, i - 1, j, w, x);
+                return verify(R_previous, i - 1, j, ww, x);
             }
         }
     }

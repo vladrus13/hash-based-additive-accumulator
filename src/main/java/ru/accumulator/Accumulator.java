@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Interface of accumulators
  */
-public interface Accumulator {
+public interface Accumulator<T> {
 
     /**
      * Get size
@@ -32,12 +32,12 @@ public interface Accumulator {
      * @param position position
      * @return list of proves
      */
-    Object prove(int position);
+    LinkedList<T> prove(int position);
 
     /**
      * Clear all accumulator
      */
     void clear();
 
-    boolean verify(byte[] R, int i, int j, Object w, byte[] x);
+    boolean verify(byte[] R, int i, int j, LinkedList<T> w, byte[] x);
 }
