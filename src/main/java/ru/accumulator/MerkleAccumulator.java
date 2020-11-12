@@ -100,7 +100,7 @@ public class MerkleAccumulator implements Accumulator<Prove> {
     }
 
     @Override
-    public boolean verify(byte[] R, int i, int j, LinkedList<Prove> w, byte[] x) {
+    public boolean verify(int i, int j, LinkedList<Prove> w, byte[] x) {
         if (!(1 <= j && j <= i)) {
             throw new IllegalArgumentException("Third argument less then second, or less than second");
         }
@@ -109,11 +109,11 @@ public class MerkleAccumulator implements Accumulator<Prove> {
         }
         Prove it = w.removeFirst();
         byte[] temp = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it.x, it.rh));
-        if (!Arrays.equals(temp, R)) {
+        if (!Arrays.equals(temp, R.get(i))) {
             return false;
         }
         if (i == j) {
-            return w.isEmpty() && Arrays.equals(R, it.x);
+            return w.isEmpty() && Arrays.equals(R.get(i), it.x);
         } else {
             int i_n = AccumulatorUtils.rpred(i - 1, j);
             int leaf = AccumulatorUtils.lastZeroCount(i_n);
@@ -125,7 +125,7 @@ public class MerkleAccumulator implements Accumulator<Prove> {
             if (!merkleTree.verify(items.get(leaf), leaf, it.w)) {
                 return false;
             }
-            return verify(R, i_n, j, w, x);
+            return verify(i_n, j, w, x);
         }
     }
 

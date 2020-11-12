@@ -38,5 +38,5 @@ public interface Accumulator<T> {
      */
     void clear();
 
-    boolean verify(byte[] R, int i, int j, LinkedList<T> w, byte[] x);
+    boolean verify(int i, int j, LinkedList<T> w, byte[] x);
 }
