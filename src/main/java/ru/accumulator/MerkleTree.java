@@ -77,10 +77,6 @@ public class MerkleTree {
         return hashed_data.get(index + first_leaf);
     }
 
-    public byte[] getOriginal(int index) {
-        return getLeaf(index);
-    }
-
 
     /**
      * Generate proof by leaf's index

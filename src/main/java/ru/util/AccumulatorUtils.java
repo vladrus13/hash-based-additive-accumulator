@@ -98,15 +98,11 @@ public class AccumulatorUtils {
         return Base64.getDecoder().decode(s);
     }
 
-    public static String toString(byte[] b) {
-        return Base64.getEncoder().encodeToString(b);
-    }
-
-    public static int bit_lift(int i, int u) {
+    public static int bitLift(int i, int u) {
         if (i == 0)
             return 0;
         if (i % (1 << u) != 0)
-            return bit_lift((i >> u) << u, u);
+            return bitLift((i >> u) << u, u);
         if (i % (1 << (u + 1)) != 0)
             return i;
         return ((i >> u) - 1) << u;

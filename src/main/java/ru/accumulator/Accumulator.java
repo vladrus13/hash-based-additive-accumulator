@@ -15,14 +15,6 @@ public interface Accumulator<T> {
     int size();
 
     /**
-     * Get element on position
-     *
-     * @param position position
-     * @return element
-     */
-    byte[] get(int position);
-
-    /**
      * Add element to accumulator
      *
      * @param element element

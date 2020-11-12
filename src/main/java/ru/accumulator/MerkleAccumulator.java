@@ -42,15 +42,6 @@ public class MerkleAccumulator implements Accumulator<Prove> {
     }
 
     @Override
-    public byte[] get(int position) {
-        if (position == 0) {
-            return null;
-        } else {
-            return S.getLeaf(AccumulatorUtils.lastZeroCount(position));
-        }
-    }
-
-    @Override
     public void add(byte[] element) {
         byte[] root = S.getRoot();
         size++;
@@ -58,32 +49,6 @@ public class MerkleAccumulator implements Accumulator<Prove> {
         S.set(AccumulatorUtils.lastZeroCount(size), result);
         elements.put(size, element);
         R.put(size, result);
-    }
-
-    /**
-     * Make tree from [0..n] elements
-     *
-     * @param n position
-     * @return {@link MerkleTree}
-     */
-    private MerkleTree makeTree(int n) {
-        ArrayList<Integer> I = new ArrayList<>();
-        ArrayList<byte[]> S = new ArrayList<>();
-        int i = 0;
-        int t = 1;
-        while (t <= n) {
-            I.add(AccumulatorUtils.hook_index(n, i));
-            i++;
-            t *= 2;
-        }
-        for (int index : I) {
-            if (index > size) {
-                S.add(R.get(index));
-            } else {
-                S.add(this.S.getLeaf(AccumulatorUtils.lastZeroCount(index)));
-            }
-        }
-        return new MerkleTree(S);
     }
 
     @Override
@@ -119,7 +84,7 @@ public class MerkleAccumulator implements Accumulator<Prove> {
             int leaf = AccumulatorUtils.lastZeroCount(i_n);
             ArrayList<byte[]> items = new ArrayList<>();
             for (int u = 0; (1 << u) < i; u++) {
-                items.add(this.R.get(AccumulatorUtils.bit_lift(i - 1, u)));
+                items.add(this.R.get(AccumulatorUtils.bitLift(i - 1, u)));
             }
             MerkleTree merkleTree = new MerkleTree(items);
             if (!merkleTree.verify(items.get(leaf), leaf, it.w)) {
@@ -141,7 +106,7 @@ public class MerkleAccumulator implements Accumulator<Prove> {
         }
         ArrayList<byte[]> items = new ArrayList<>();
         for (int u = 0; (1 << u) < i; u++) {
-            items.add(R.get(AccumulatorUtils.bit_lift(i - 1, u)));
+            items.add(R.get(AccumulatorUtils.bitLift(i - 1, u)));
         }
         MerkleTree previous = new MerkleTree(items);
         Prove prove = new Prove(elements.get(i), previous.getRoot(), new LinkedList<>());

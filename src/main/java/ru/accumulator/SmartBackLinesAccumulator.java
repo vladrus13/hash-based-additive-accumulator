@@ -37,8 +37,7 @@ public class SmartBackLinesAccumulator implements Accumulator<byte[]> {
         return size;
     }
 
-    @Override
-    public byte[] get(int position) {
+    private byte[] get(int position) {
         if (position == 0) {
             return null;
         } else {
