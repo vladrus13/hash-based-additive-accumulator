@@ -100,12 +100,12 @@ public class MerkleTree {
         return ans;
     }
     /*
-    public boolean verify(String rootHash, int index, String leafHash, List<String> neighboursHashes) {
-        if (getRoot().equals(rootHash) && getLeaf(index).equals(leafHash)) {
-            List<String> expected = proof(index);
-            int cur = 1;
-            for (String got : neighboursHashes) {
-                if (!got.equals(expected.get(cur))) {
+    public static boolean verify(byte[] rootHash, int index, List<byte[]> neighboursHashes) {
+        if (getRoot().equals(rootHash)) {
+            List<byte[]> expected = proof(index);
+            int cur = 0;
+            for (byte[] got : neighboursHashes) {
+                if (!Arrays.equals(got, expected.get(cur))) {
                     return false;
                 }
                 cur++;
@@ -113,10 +113,11 @@ public class MerkleTree {
             return true;
         }
         return false;
-    }*/
+    }
+    */
 
-    public static boolean verify(byte[] rootHash, int index, byte[] leafHash, List<byte[]> neighboursHashes) {
-        byte[] current = leafHash;
+    public boolean verify(byte[] rootHash, int index, List<byte[]> neighboursHashes) {
+        byte[] current = getLeaf(index);
         for (byte[] neighbourString : neighboursHashes) {
             if (index % 2 == 0) {
                 current = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(current, neighbourString));

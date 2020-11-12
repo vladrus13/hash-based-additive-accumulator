@@ -26,7 +26,7 @@ public class TreeTest {
         byte[] test = "smth i would test".getBytes();
         tree.set(0, test);
         List<byte[]> ree = new ArrayList<>();
-        assertTrue(MerkleTree.verify(tree.getRoot(), 0, test, tree.proof(0)));
+        assertTrue(tree.verify(tree.getRoot(), 0, tree.proof(0)));
     }
 
     @Test
@@ -42,7 +42,7 @@ public class TreeTest {
         }
 
         for (int i = 0; i < 4; i++) {
-            assertTrue(MerkleTree.verify(tree.getRoot(), i, elems.get(i), tree.proof(i)));
+            assertTrue(tree.verify(tree.getRoot(), i, tree.proof(i)));
         }
     }
 
@@ -60,7 +60,7 @@ public class TreeTest {
         }
 
         for (int i = 0; i < 10000; i++) {
-            assertTrue(MerkleTree.verify(tree.getRoot(), i, tree.getLeaf(i), tree.proof(i)));
+            assertTrue(tree.verify(tree.getRoot(), i, tree.proof(i)));
         }
     }
 }
