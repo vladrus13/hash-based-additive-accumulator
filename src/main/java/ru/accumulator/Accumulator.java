@@ -1,7 +1,6 @@
 package ru.accumulator;
 
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Interface of accumulators

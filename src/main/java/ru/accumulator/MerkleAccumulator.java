@@ -104,8 +104,8 @@ public class MerkleAccumulator implements Accumulator<Prove> {
         if (!(1 <= j && j <= i)) {
             throw new IllegalArgumentException("Third argument less then second, or less than second");
         }
-        if (w.size() < 2) {
-            throw new IllegalArgumentException("Size of hash-array less than three");
+        if (w.size() == 0) {
+            throw new IllegalArgumentException("Size of hash-array less than one");
         }
         Prove it = w.removeFirst();
         byte[] temp = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it.x, it.rh));
