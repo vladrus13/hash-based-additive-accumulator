@@ -116,8 +116,8 @@ public class MerkleTree {
     }
     */
 
-    public boolean verify(byte[] rootHash, int index, List<byte[]> neighboursHashes) {
-        byte[] current = getLeaf(index);
+    public boolean verify(byte[] leafValue, int index, List<byte[]> neighboursHashes) {
+        byte[] current = leafValue;
         for (byte[] neighbourString : neighboursHashes) {
             if (index % 2 == 0) {
                 current = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(current, neighbourString));
@@ -126,7 +126,7 @@ public class MerkleTree {
             }
             index /= 2;
         }
-        return Arrays.equals(rootHash, current);
+        return Arrays.equals(getRoot(), current);
     }
 
     private int getNeighbour(int index) {

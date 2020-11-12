@@ -80,7 +80,8 @@ public class AccumulatorUtils {
     public static byte[] concatDigits(byte[] a) {
         if (a == null || a.length == 0) {
             //Todo: Throw smth?
-            System.out.println("Warning! Zero provided to concat");
+         //   System.out.println("Warning! Zero provided to concat");
+
         }
         return a;
     }
