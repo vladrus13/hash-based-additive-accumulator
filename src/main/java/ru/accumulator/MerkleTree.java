@@ -31,7 +31,7 @@ public class MerkleTree {
         }
     }
 
-    // empty Merkle Tree provides Tree for 2 vertexes
+    // empty Merkle Tree provides Tree for 1 vertex
     public MerkleTree() {
         hashed_data = new ArrayList<>(Collections.singleton(null));
         first_leaf = 0;
@@ -79,7 +79,6 @@ public class MerkleTree {
 
     public byte[] getOriginal(int index) {
         return getLeaf(index);
-        //        return original_data.get(index);
     }
 
 
@@ -91,7 +90,6 @@ public class MerkleTree {
      */
     public List<byte[]> proof(int index) {
         List<byte[]> ans = new ArrayList<>();
-        //ans.add(getLeaf(index));
 
         for (int currentState = index + first_leaf; currentState != 0;
              currentState = (currentState - 1) / 2) {
@@ -99,22 +97,6 @@ public class MerkleTree {
         }
         return ans;
     }
-    /*
-    public static boolean verify(byte[] rootHash, int index, List<byte[]> neighboursHashes) {
-        if (getRoot().equals(rootHash)) {
-            List<byte[]> expected = proof(index);
-            int cur = 0;
-            for (byte[] got : neighboursHashes) {
-                if (!Arrays.equals(got, expected.get(cur))) {
-                    return false;
-                }
-                cur++;
-            }
-            return true;
-        }
-        return false;
-    }
-    */
 
     public boolean verify(byte[] leafValue, int index, List<byte[]> neighboursHashes) {
         byte[] current = leafValue;
@@ -136,7 +118,6 @@ public class MerkleTree {
 
     private byte[] getLeafHash(byte[] value) {
         return value;
-//        return AccumulatorUtils.getSha256(value);
     }
 
     private byte[] getVertexesHash(int index) {

@@ -11,10 +11,11 @@ public class Util {
     /**
      * Alphabet for Base64
      */
-    private static String alphabet = "abcdefghijklmnopqrstuvwxyz";
+    private static final String alphabet = "abcdefghijklmnopqrstuvwxyz";
 
     /**
      * Generate random char
+     *
      * @return random char
      */
     public static char generateRandomChar() {
@@ -23,6 +24,7 @@ public class Util {
 
     /**
      * Generate random string
+     *
      * @param size size of stirng
      * @return random string
      */
@@ -42,11 +44,12 @@ public class Util {
 
     /**
      * Generate int in range [a, b]
+     *
      * @param a first
      * @param b second
      * @return random in [a, b]
      */
     public static int generateInRange(int a, int b) {
-        return random.nextInt(b - a  + 1) + a;
+        return random.nextInt(b - a + 1) + a;
     }
 }

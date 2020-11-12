@@ -12,15 +12,6 @@ public class AccumulatorUtils {
         return result;
     }
 
-    public static int maxNotLargerDegreeOfTwo(int number) {
-        int res = 0;
-        int cur = 1;
-        while (2 * cur <= number) {
-            cur <<= 1;
-            res++;
-        }
-        return res;
-    }
 
     //Return the maximum power of two that divides n. Return 0 for n == 0."""
     public static int maxDividingPowerOfTwo(int number) {
@@ -80,7 +71,7 @@ public class AccumulatorUtils {
     public static byte[] concatDigits(byte[] a) {
         if (a == null || a.length == 0) {
             //Todo: Throw smth?
-         //   System.out.println("Warning! Zero provided to concat");
+            //   System.out.println("Warning! Zero provided to concat");
 
         }
         return a;

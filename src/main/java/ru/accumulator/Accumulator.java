@@ -9,12 +9,14 @@ public interface Accumulator<T> {
 
     /**
      * Get size
+     *
      * @return size of accumulator
      */
     int size();
 
     /**
      * Get element on position
+     *
      * @param position position
      * @return element
      */
@@ -22,12 +24,14 @@ public interface Accumulator<T> {
 
     /**
      * Add element to accumulator
+     *
      * @param element element
      */
     void add(byte[] element);
 
     /**
      * Get list of proves for position
+     *
      * @param position position
      * @return list of proves
      */

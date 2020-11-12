@@ -1,7 +1,6 @@
 package ru.accumulator;
 
 import ru.util.AccumulatorUtils;
-import ru.util.Prove;
 
 import java.util.*;
 
@@ -56,8 +55,8 @@ public class SmartBackLinesAccumulator implements Accumulator<byte[]> {
         byte[] sum = AccumulatorUtils.concatDigits(element, get(size - 1), get(size - AccumulatorUtils.maxDividingPowerOfTwo(size)));
         byte[] result = AccumulatorUtils.getSha256(sum);
         S.set(AccumulatorUtils.lastZeroCount(size), result);
-        elements.put( size, element);
-        R.put( size, result);
+        elements.put(size, element);
+        R.put(size, result);
     }
 
     @Override

@@ -6,6 +6,7 @@ import ru.util.AccumulatorUtils;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -105,8 +106,50 @@ public class AccumulatorTest {
         }
     }
 
+    public void addAndTestMissed(Accumulator accumulator, ArrayList<byte[]> elements,
+                                 ArrayList<byte[]> falseElements) {
+        for (byte[] in : elements) {
+            accumulator.add(in);
+        }
+        for (byte[] falseElement : falseElements) {
+            for (int j = 0; j < elements.size(); j++) {
+                assertFalse(accumulator.verify(accumulator.size(), j + 1, accumulator.prove(j + 1), falseElement));
+            }
+        }
+    }
+
     @Test
     @Order(7)
+    public void missedElementsVerifying() {
+        Set<byte[]> setTests = new HashSet<>();
+        ArrayList<byte[]> tests = new ArrayList<>();
+        ArrayList<byte[]> falseTests = new ArrayList<>();
+        byte[] test = Util.generateRandomByte(Util.generateInRange(2, 10));
+        for (int i = 0; i < 100; i++) {
+            while (setTests.contains(test)) {
+                test = Util.generateRandomByte(Util.generateInRange(2, 10));
+            }
+            setTests.add(test);
+            tests.add(test);
+        }
+
+        for (int i = 0; i < 100; i++) {
+            while (setTests.contains(test)) {
+                test = Util.generateRandomByte(Util.generateInRange(2, 10));
+            }
+            setTests.add(test);
+            falseTests.add(test);
+        }
+
+
+        for (Accumulator<?> accumulator : accumulators) {
+            addAndTestMissed(accumulator, tests, falseTests);
+        }
+    }
+
+
+    @Test
+    @Order(8)
     public void BigRandomTest() {
         Set<byte[]> setTests = new HashSet<>();
         ArrayList<byte[]> tests = new ArrayList<>();

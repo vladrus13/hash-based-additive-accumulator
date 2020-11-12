@@ -1,8 +1,12 @@
 import org.junit.jupiter.api.*;
 import ru.accumulator.MerkleTree;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -25,8 +29,7 @@ public class TreeTest {
     public void addingOneElementTest() {
         byte[] test = "smth i would test".getBytes();
         tree.set(0, test);
-        List<byte[]> ree = new ArrayList<>();
-        assertTrue(tree.verify(tree.getRoot(), 0, tree.proof(0)));
+        assertTrue(tree.verify(test, 0, tree.proof(0)));
     }
 
     @Test
@@ -42,7 +45,7 @@ public class TreeTest {
         }
 
         for (int i = 0; i < 4; i++) {
-            assertTrue(tree.verify(tree.getRoot(), i, tree.proof(i)));
+            assertTrue(tree.verify(elems.get(i), i, tree.proof(i)));
         }
     }
 
@@ -50,17 +53,33 @@ public class TreeTest {
     @Order(3)
     public void BigRandomTest() {
         Set<byte[]> strings = new HashSet<>();
+        List<byte[]> used = new ArrayList<>();
+        List<byte[]> notUsed = new ArrayList<>();
         byte[] test = Util.generateRandomByte(Util.generateInRange(2, 10));
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             while (strings.contains(test)) {
                 test = Util.generateRandomByte(Util.generateInRange(2, 10));
             }
             tree.set(i, test);
             strings.add(test);
+            used.add(test);
         }
-        byte[] root = tree.getRoot();
-        for (int i = 0; i < 10000; i++) {
-            assertTrue(tree.verify(root, i, tree.proof(i)));
+
+        for (int i = 0; i < 1000; i++) {
+            while (strings.contains(test)) {
+                test = Util.generateRandomByte(Util.generateInRange(2, 10));
+            }
+            strings.add(test);
+            notUsed.add(test);
+        }
+
+        for (int i = 0; i < 1000; i++) {
+            assertTrue(tree.verify(used.get(i), i, tree.proof(i)));
+        }
+        for (int i = 0; i < 1000; i++) {
+            for (int j = 0; j < 1000; j++) {
+                assertFalse(tree.verify(notUsed.get(i), j, tree.proof(j)));
+            }
         }
     }
 }
