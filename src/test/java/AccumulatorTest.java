@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AccumulatorTest {
 
-    public static ArrayList<Accumulator> accumulators;
+    public static ArrayList<Accumulator<?>> accumulators;
 
     @BeforeAll
     public static void beforeAll() {
@@ -27,7 +27,7 @@ public class AccumulatorTest {
     @Order(1)
     public void addingOneElementTest() {
         String test = Util.generateRandomString(10);
-        for (Accumulator accumulator : accumulators) {
+        for (Accumulator<?> accumulator : accumulators) {
             accumulator.add(AccumulatorUtils.toByteArray(test));
         }
     }
@@ -41,7 +41,7 @@ public class AccumulatorTest {
             while (strings.contains(test)) {
                 test = Util.generateRandomByte(Util.generateInRange(2, 10));
             }
-            for (Accumulator accumulator : accumulators) {
+            for (Accumulator<?> accumulator : accumulators) {
                 accumulator.add(test);
             }
             strings.add(test);
@@ -53,7 +53,7 @@ public class AccumulatorTest {
             accumulator.add(in);
         }
         for (int i = 0; i < input.size(); i++) {
-            assertTrue(accumulator.verify(accumulator.get(accumulator.size()), accumulator.size(), i + 1, accumulator.prove(i + 1), input.get(i)));
+            assertTrue(accumulator.verify(accumulator.size(), i + 1, accumulator.prove(i + 1), input.get(i)));
         }
     }
 
@@ -61,7 +61,7 @@ public class AccumulatorTest {
     @Order(3)
     public void oneElementTest() {
         byte[] hello = Util.generateRandomByte(5);
-        for (Accumulator accumulator : accumulators) {
+        for (Accumulator<?> accumulator : accumulators) {
             addAndTestAll(accumulator, new ArrayList<>(Collections.singleton(hello)));
         }
     }
@@ -70,7 +70,7 @@ public class AccumulatorTest {
     @Order(4)
     public void twoElementsTest() {
         ArrayList<byte[]> input = new ArrayList<>(List.of(Util.generateRandomByte(10), Util.generateRandomByte(9)));
-        for (Accumulator accumulator : accumulators) {
+        for (Accumulator<?> accumulator : accumulators) {
             addAndTestAll(accumulator, input);
         }
     }
@@ -82,7 +82,7 @@ public class AccumulatorTest {
         for (int i = 1; i < 11; i++) {
             input.add(Util.generateRandomByte(i));
         }
-        for (Accumulator accumulator : accumulators) {
+        for (Accumulator<?> accumulator : accumulators) {
             addAndTestAll(accumulator, input);
         }
     }
@@ -100,7 +100,7 @@ public class AccumulatorTest {
             setTests.add(test);
             tests.add(test);
         }
-        for (Accumulator accumulator : accumulators) {
+        for (Accumulator<?> accumulator : accumulators) {
             addAndTestAll(accumulator, tests);
         }
     }
@@ -118,7 +118,7 @@ public class AccumulatorTest {
             setTests.add(test);
             tests.add(test);
         }
-        for (Accumulator accumulator : accumulators) {
+        for (Accumulator<?> accumulator : accumulators) {
             addAndTestAll(accumulator, tests);
         }
     }
