@@ -32,12 +32,12 @@ public interface Accumulator {
      * @param position position
      * @return list of proves
      */
-    LinkedList<byte[]> prove(int position);
+    Object prove(int position);
 
     /**
      * Clear all accumulator
      */
     void clear();
 
-    boolean verify(byte[] R, int i, int j, LinkedList<byte[]> w, byte[] x);
+    boolean verify(byte[] R, int i, int j, Object w, byte[] x);
 }

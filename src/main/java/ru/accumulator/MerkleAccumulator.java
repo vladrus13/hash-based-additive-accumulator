@@ -1,6 +1,7 @@
 package ru.accumulator;
 
 import ru.util.AccumulatorUtils;
+import ru.util.Prove;
 
 import java.util.*;
 
@@ -86,10 +87,8 @@ public class MerkleAccumulator implements Accumulator {
     }
 
     @Override
-    public LinkedList<byte[]> prove(int position) {
-        LinkedList<byte[]> answer = new LinkedList<>();
-        prove(size, position, answer);
-        return answer;
+    public List<Prove> prove(int position) {
+        return prove(size, position);
     }
 
     @Override
@@ -101,39 +100,31 @@ public class MerkleAccumulator implements Accumulator {
     }
 
     @Override
-    public boolean verify(byte[] R, int i, int j, LinkedList<byte[]> w, byte[] x) {
+    public boolean verify(byte[] R, int i, int j, Object ww, byte[] x) {
+        LinkedList<Prove> w = (LinkedList<Prove>) ww;
         if (!(1 <= j && j <= i)) {
             throw new IllegalArgumentException("Third argument less then second, or less than second");
         }
         if (w.size() < 2) {
             throw new IllegalArgumentException("Size of hash-array less than three");
         }
-        byte[] it = w.removeFirst();
-        byte[] M_root = w.removeFirst();
-        byte[] temr = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, M_root));
-        if (!Arrays.equals(AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, M_root)), R)) {
+        Prove it = w.removeFirst();
+        byte[] temp = AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it.x, it.rh));
+        if (!Arrays.equals(temp, R)) {
             return false;
         }
         if (i == j) {
-            return Arrays.equals(it, x);
+            return w.isEmpty() && Arrays.equals(R, it.x);
         } else {
             int i_n = AccumulatorUtils.rpred(i - 1, j);
             int leaf = AccumulatorUtils.lastZeroCount(i_n);
-            byte[] real_leaf = w.removeFirst();
-            int merkle_size = AccumulatorUtils.maxNotLargerDegreeOfTwo(i - 1); // TODO: Really?
-            int r = 0, ans = 1;
-            while (ans != merkle_size) {
-                ans *= 2;
-                r++;
+            ArrayList<byte[]> items = new ArrayList<>();
+            for (int u = 0; (1 << u) < i; u++) {
+                items.add(this.R.get(AccumulatorUtils.bit_lift(i - 1, u)));
             }
-            ArrayList<byte[]> merkle = new ArrayList<>();
-            for (int k = 0; k < r; k++) {
-                merkle.add(w.removeFirst());
-            }
-            if (!MerkleTree.verify(M_root, leaf, real_leaf, merkle)) {
-                return false;
-            }
-            return verify(real_leaf, i_n, j, w, x);
+            MerkleTree merkleTree = new MerkleTree(items);
+            // TODO merkleTree.verify(p.w, leaf, items.get(leaf));
+            return verify(R, i_n, j, w, x);
         }
     }
 
@@ -142,21 +133,26 @@ public class MerkleAccumulator implements Accumulator {
      *
      * @param j      position start
      * @param i      position finish
-     * @param answer list with answer
      */
-    public void prove(int i, int j, LinkedList<byte[]> answer) {
+    private List<Prove> prove(int i, int j) {
         if (j > i) {
             throw new IllegalArgumentException("Size less than first second argument or second less than first");
         }
-        MerkleTree previous = makeTree(i - 1);
-        answer.add(elements.get(i));
-        answer.add(previous.getRoot());
+        ArrayList<byte[]> items = new ArrayList<>();
+        for (int u = 0; (1 << u) < i; u++) {
+            items.add(R.get(AccumulatorUtils.bit_lift(i - 1, u)));
+        }
+        MerkleTree previous = new MerkleTree(items);
+        Prove prove = new Prove(elements.get(i), previous.getRoot(), new LinkedList<>());
         if (i > j) {
             int i_next = AccumulatorUtils.rpred(i - 1, j);
             int leaf = AccumulatorUtils.lastZeroCount(i_next);
-            answer.add(previous.getLeaf(leaf));
-            answer.addAll(new ArrayList<>(previous.proof(leaf)));
-            prove(i_next, j, answer);
+            prove.w.addAll(previous.proof(leaf));
+            List<Prove> prove1 = new LinkedList<>(prove(i_next, j));
+            prove1.add(prove);
+            return prove1;
+        } else {
+            return List.of(prove);
         }
     }
 }

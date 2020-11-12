@@ -76,7 +76,8 @@ public class SmartBackLinesAccumulator implements Accumulator {
     }
 
     @Override
-    public boolean verify(byte[] R, int i, int j, LinkedList<byte[]> w, byte[] x) {
+    public boolean verify(byte[] R, int i, int j, Object ww, byte[] x) {
+        LinkedList<byte[]> w = (LinkedList<byte[]>) ww;
         if (i < j) {
             throw new IllegalArgumentException("Third less than second");
         }
@@ -111,9 +112,9 @@ public class SmartBackLinesAccumulator implements Accumulator {
         if (i > j) {
             throw new IllegalArgumentException("Second argument more than first");
         }
-        answer.add(elements.get( j));
-        answer.add(R.get( (j - 1)));
-        answer.add(R.get( AccumulatorUtils.predecessor(j)));
+        answer.add(elements.get(j));
+        answer.add(R.get((j - 1)));
+        answer.add(R.get(AccumulatorUtils.predecessor(j)));
         if (j > i) {
             if (AccumulatorUtils.predecessor(j) >= i) {
                 prove(i, AccumulatorUtils.predecessor(j), answer);
