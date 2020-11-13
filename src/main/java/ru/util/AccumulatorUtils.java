@@ -13,7 +13,7 @@ public class AccumulatorUtils {
     }
 
 
-    //Return the maximum power of two that divides n. Return 0 for n == 0."""
+    //Return the maximum power of two that divides n. Return 0 for n == 0.
     public static int maxDividingPowerOfTwo(int number) {
         return number & (-number);
     }
