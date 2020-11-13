@@ -33,11 +33,11 @@ public class PerformanceLauncher {
             int it = 0;
             for (int elements = 1; elements < countElements; elements += step) {
                 accumulator.clear();
-                long time = System.nanoTime() / 10;
                 for (int i = 0; i < elements; i++) {
-                    accumulator.add(generateRandomByte(10));
+                    accumulator.add(generateRandomByte(100));
                 }
-                byte[] end = generateRandomByte(10);
+                byte[] end = generateRandomByte(100);
+                long time = System.nanoTime() / 10;
                 accumulator.add(end);
                 time = System.nanoTime() / 10 - time;
                 resultAdding.add(new Point(it  * pointStep, (int) time));
