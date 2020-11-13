@@ -113,10 +113,12 @@ public class AccumulatorTest {
         }
         for (byte[] falseElement : falseElements) {
             for (int j = 0; j < elements.size(); j++) {
-                //Todo: make more strong tests?
-                //for (int t = 0; t < elements.size(); t++) {
-                assertFalse(accumulator.verify(accumulator.size(), j + 1, accumulator.prove(j + 1), falseElement));
-                //}
+                for (int t = 0; t < elements.size(); t++) {
+                    try {
+                        assertFalse(accumulator.verify(accumulator.size(), t + 1, accumulator.prove(j + 1), falseElement));
+                    } catch (Exception e) {
+                    }
+                }
             }
         }
     }

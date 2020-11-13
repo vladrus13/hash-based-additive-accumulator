@@ -82,4 +82,40 @@ public class TreeTest {
             }
         }
     }
+
+    @Test
+    @Order(5)
+    public void badProofValidation() {
+        Set<byte[]> strings = new HashSet<>();
+        List<byte[]> used = new ArrayList<>();
+        List<byte[]> notUsed = new ArrayList<>();
+        byte[] test = Util.generateRandomByte(Util.generateInRange(2, 10));
+        for (int i = 0; i < 1000; i++) {
+            while (strings.contains(test)) {
+                test = Util.generateRandomByte(Util.generateInRange(2, 10));
+            }
+            tree.set(i, test);
+            strings.add(test);
+            used.add(test);
+        }
+
+        for (int i = 0; i < 1000; i++) {
+            while (strings.contains(test)) {
+                test = Util.generateRandomByte(Util.generateInRange(2, 10));
+            }
+            strings.add(test);
+            notUsed.add(test);
+        }
+
+        int proofSize = tree.proof(0).size();
+        for (int i = 0; i < 1000; i++) {
+            List<byte[]> myProof = new ArrayList<>();
+            for (int j = 0; j < proofSize; j++) {
+                myProof.add(Util.generateRandomByte(256));
+            }
+            for (int j = 0; j < used.size(); j++) {
+                assertFalse(tree.verify(notUsed.get(i), j, myProof));
+            }
+        }
+    }
 }
