@@ -69,7 +69,7 @@ public class ImageCreator {
         IntStream.range(0, size).forEach(element -> {
                     lineOnGraphic(graphics, new Point(-10, element * perOne), new Point(10, element * perOne));
                     lineOnGraphic(graphics, new Point(element * perOne, -10), new Point(element * perOne, 10));
-                    graphics.drawString((double) element / size * 100 + "%", 10, 1000 - (element * perOne + 100));
+                    graphics.drawString(element * 100 / size + "%", 10, 1000 - (element * perOne + 100));
                     graphics.drawString(String.valueOf(element * 4), 100 + element * perOne, 990);
                 }
         );

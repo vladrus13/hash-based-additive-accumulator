@@ -29,7 +29,7 @@ public class PerformanceLauncher {
             String accumulatorName = accumulator.getClass().getName();
             ArrayList<Point> resultAdding = new ArrayList<>();
             ArrayList<Point> resultFind = new ArrayList<>();
-            int pointStep = 800 / (countElements / step);
+            int pointStep = 800 / (countElements / step - 2);
             int it = 0;
             for (int elements = 1; elements < countElements; elements += step) {
                 accumulator.clear();
@@ -47,6 +47,10 @@ public class PerformanceLauncher {
                 resultFind.add(new Point(it  * pointStep, (int) time));
                 it++;
             }
+            resultAdding.remove(0);
+            resultAdding.remove(0);
+            resultFind.remove(0);
+            resultFind.remove(0);
             int max = resultAdding.stream().mapToInt(element -> element.y).max().orElse(0);
             for (Point point : resultAdding) {
                 point.y = (int) (((long) point.y) * 800 / max);
