@@ -14,7 +14,7 @@ public class PerformanceLauncher {
     private static Random random;
 
     private static final int countElements = 1000000;
-    private static final int step = 20000;
+    private static final int step = 50000;
 
     public static byte[] generateRandomByte(long size) {
         byte[] returned = new byte[(int) size];
@@ -33,27 +33,27 @@ public class PerformanceLauncher {
             int it = 0;
             for (int elements = 1; elements < countElements; elements += step) {
                 accumulator.clear();
+                long time = System.nanoTime() / 10;
                 for (int i = 0; i < elements; i++) {
                     accumulator.add(generateRandomByte(10));
                 }
-                long time = System.nanoTime();
                 byte[] end = generateRandomByte(10);
                 accumulator.add(end);
-                time = System.nanoTime() - time;
+                time = System.nanoTime() / 10 - time;
                 resultAdding.add(new Point(it  * pointStep, (int) time));
-                time = System.nanoTime();
+                time = System.nanoTime() / 10;
                 accumulator.verify(accumulator.size(), accumulator.size(), accumulator.prove(accumulator.size()), end);
-                time = System.nanoTime() - time;
+                time = System.nanoTime() / 10 - time;
                 resultFind.add(new Point(it  * pointStep, (int) time));
                 it++;
             }
             int max = resultAdding.stream().mapToInt(element -> element.y).max().orElse(0);
             for (Point point : resultAdding) {
-                point.y = point.y * 800 / max;
+                point.y = (int) (((long) point.y) * 800 / max);
             }
             max = resultFind.stream().mapToInt(element -> element.y).max().orElse(0);
             for (Point point : resultFind) {
-                point.y = point.y * 800 / max;
+                point.y = (int) (((long) point.y) * 800 / max);
             }
             ImageSaver.save(ImageCreator.draw(accumulatorName, accumulatorName, resultAdding, resultFind), accumulatorName);
         }

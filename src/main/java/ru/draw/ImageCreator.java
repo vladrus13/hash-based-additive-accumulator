@@ -74,7 +74,7 @@ public class ImageCreator {
                 }
         );
         graphics.drawString(String.format("File: %s, Method: %s", file, method), 10, 10);
-        graphics.drawString("Red - test, blue - train", 10, 30);
+        graphics.drawString("Red - adding, blue - find", 10, 30);
         graphics.drawString("@vladrus13", 930, 980);
         graphics.setColor(Color.RED);
         for (Point point : test) {
