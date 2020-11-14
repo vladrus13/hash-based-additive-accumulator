@@ -75,52 +75,50 @@ public class SmartBackLinesAccumulator implements Accumulator<byte[]> {
     }
 
     @Override
-    public boolean verify(int proofIndex, int j, LinkedList<byte[]> ww, byte[] x) {
-        if (proofIndex < j) {
-            throw new IllegalArgumentException("Third less than second");
+    public boolean verify(int startIndex, int provableIndex, LinkedList<byte[]> witness, byte[] element) {
+        if (startIndex < provableIndex) {
+            throw new IllegalArgumentException("Start of the proof less than provable part");
         }
-        if (ww.size() < 3) {
+        if (witness.size() < 3) {
             throw new IllegalArgumentException("Size of hash-array less than three");
         }
-        byte[] it = ww.removeFirst();
-        byte[] R_previous = ww.removeFirst();
-        byte[] R_pred = ww.removeFirst();
-        if (!Arrays.equals(AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, R_previous, R_pred)), this.R.get(proofIndex))) {
+        byte[] it = witness.removeFirst();
+        byte[] previousR = witness.removeFirst();
+        byte[] predR = witness.removeFirst();
+        if (!Arrays.equals(AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, previousR, predR)), this.R.get(startIndex))) {
             return false;
         }
-        if (proofIndex == j) {
-            return Arrays.equals(it, x);
+        if (startIndex == provableIndex) {
+            return Arrays.equals(it, element);
         } else {
-            if (AccumulatorUtils.predecessor(proofIndex) >= j) {
-                return verify(AccumulatorUtils.predecessor(proofIndex), j, ww, x);
+            if (AccumulatorUtils.predecessor(startIndex) >= provableIndex) {
+                return verify(AccumulatorUtils.predecessor(startIndex), provableIndex, witness, element);
             } else {
-                return verify(proofIndex - 1, j, ww, x);
+                return verify(startIndex - 1, provableIndex, witness, element);
             }
         }
     }
 
     /**
-     * Get proves from i to j
+     * Get proves from provableIndex to startIndex
      *
-     * @param j      position start
-     * @param i      position finish
-     * @param answer list with answer
+     * @param startIndex    position start
+     * @param provableIndex position finish
+     * @param answer        list with answer
      */
-    private void prove(int i, int j, LinkedList<byte[]> answer) {
-        if (i > j) {
-            throw new IllegalArgumentException("Second argument more than first");
+    private void prove(int provableIndex, int startIndex, LinkedList<byte[]> answer) {
+        if (startIndex < provableIndex) {
+            throw new IllegalArgumentException("Start of the proof less than provable part");
         }
-        answer.add(elements.get(j));
-        answer.add(R.get((j - 1)));
-        answer.add(R.get(AccumulatorUtils.predecessor(j)));
-        if (j > i) {
-            if (AccumulatorUtils.predecessor(j) >= i) {
-                prove(i, AccumulatorUtils.predecessor(j), answer);
+        answer.add(elements.get(startIndex));
+        answer.add(R.get((startIndex - 1)));
+        answer.add(R.get(AccumulatorUtils.predecessor(startIndex)));
+        if (startIndex > provableIndex) {
+            if (AccumulatorUtils.predecessor(startIndex) >= provableIndex) {
+                prove(provableIndex, AccumulatorUtils.predecessor(startIndex), answer);
             } else {
-                prove(i, j - 1, answer);
+                prove(provableIndex, startIndex - 1, answer);
             }
         }
     }
-
-
 }
