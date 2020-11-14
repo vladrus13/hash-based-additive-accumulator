@@ -11,6 +11,11 @@ public class MerkleTree {
     List<byte[]> hashed_data;
     int first_leaf;
 
+    /**
+     * Build new MerkleTree on given source data.
+     *
+     * @param source data on which the MerkleTree built
+     */
     public MerkleTree(List<byte[]> source) {
         if (source == null || source.size() == 0) {
             clear();
@@ -31,55 +36,16 @@ public class MerkleTree {
         }
     }
 
-    // empty Merkle Tree provides Tree for 1 vertex
+    /**
+     * Build new empty MerkleTree. Probides one leaf.
+     */
     public MerkleTree() {
         hashed_data = new ArrayList<>(Collections.singleton(null));
         first_leaf = 0;
     }
 
-    public void clear() {
-        hashed_data = new ArrayList<>(Collections.singleton(null));
-        first_leaf = 0;
-    }
-
-
-    private void expand() {
-        List<byte[]> new_storage = new ArrayList<>(Collections.nCopies(2 * hashed_data.size() + 1, null));
-        for (int i = 0; i < hashed_data.size(); i++) {
-            new_storage.set(i + AccumulatorUtils.maxNotLargerPowerOfTwo(i + 1), hashed_data.get(i));
-        }
-        hashed_data = new_storage;
-        first_leaf = 2 * first_leaf + 1;
-        hashed_data.set(0, getVertexesHash(0));
-    }
-
-    private boolean checkCapacity(int index) {
-        return index + first_leaf >= hashed_data.size();
-    }
-
-    public void set(int index, byte[] value) {
-        while (checkCapacity(index)) {
-            expand();
-        }
-        hashed_data.set(index + first_leaf, getLeafHash(value));
-        for (int currentState = (index + first_leaf - 1) / 2; ;
-             currentState = (currentState - 1) / 2) {
-            hashed_data.set(currentState, getVertexesHash(currentState));
-            if (currentState == 0) break;
-        }
-    }
-
-    public byte[] getRoot() {
-        return hashed_data.get(0);
-    }
-
-    public byte[] getLeaf(int index) {
-        return hashed_data.get(index + first_leaf);
-    }
-
-
     /**
-     * Generate proof by leaf's index
+     * Generate proof by leaf's index.
      *
      * @param index - index of some leaf
      * @return {@link List} of {@link String} where first element if leaf's data and then data of upcoming neighbours
@@ -94,6 +60,23 @@ public class MerkleTree {
         return ans;
     }
 
+    /**
+     * Return hash of the MerkleTree root
+     *
+     * @return hash of the root
+     */
+    public byte[] getRoot() {
+        return hashed_data.get(0);
+    }
+
+    /**
+     * Verify proof. Return true if proof is correct, and false if incorrect.
+     *
+     * @param leafValue        leaf hash
+     * @param index            leaf index
+     * @param neighboursHashes neighbours hashes to compute a hash of the root
+     * @return true if proof is correct, else false
+     */
     public boolean verify(byte[] leafValue, int index, List<byte[]> neighboursHashes) {
         byte[] current = leafValue;
         for (byte[] neighbourString : neighboursHashes) {
@@ -105,6 +88,46 @@ public class MerkleTree {
             index /= 2;
         }
         return Arrays.equals(getRoot(), current);
+    }
+
+    /**
+     * Makes tree empty by deleting all data.
+     */
+    public void clear() {
+        hashed_data = new ArrayList<>(Collections.singleton(null));
+        first_leaf = 0;
+    }
+
+    /**
+     * Set value to leaf.
+     *
+     * @param index leaf index
+     * @param value new value
+     */
+    public void set(int index, byte[] value) {
+        while (checkCapacity(index)) {
+            expand();
+        }
+        hashed_data.set(index + first_leaf, getLeafHash(value));
+        for (int currentState = (index + first_leaf - 1) / 2; ;
+             currentState = (currentState - 1) / 2) {
+            hashed_data.set(currentState, getVertexesHash(currentState));
+            if (currentState == 0) break;
+        }
+    }
+
+    private boolean checkCapacity(int index) {
+        return index + first_leaf >= hashed_data.size();
+    }
+
+    private void expand() {
+        List<byte[]> new_storage = new ArrayList<>(Collections.nCopies(2 * hashed_data.size() + 1, null));
+        for (int i = 0; i < hashed_data.size(); i++) {
+            new_storage.set(i + AccumulatorUtils.maxNotLargerPowerOfTwo(i + 1), hashed_data.get(i));
+        }
+        hashed_data = new_storage;
+        first_leaf = 2 * first_leaf + 1;
+        hashed_data.set(0, getVertexesHash(0));
     }
 
     private int getNeighbour(int index) {

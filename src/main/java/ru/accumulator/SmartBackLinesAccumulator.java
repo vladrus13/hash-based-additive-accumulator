@@ -75,8 +75,8 @@ public class SmartBackLinesAccumulator implements Accumulator<byte[]> {
     }
 
     @Override
-    public boolean verify(int i, int j, LinkedList<byte[]> ww, byte[] x) {
-        if (i < j) {
+    public boolean verify(int proofIndex, int j, LinkedList<byte[]> ww, byte[] x) {
+        if (proofIndex < j) {
             throw new IllegalArgumentException("Third less than second");
         }
         if (ww.size() < 3) {
@@ -85,16 +85,16 @@ public class SmartBackLinesAccumulator implements Accumulator<byte[]> {
         byte[] it = ww.removeFirst();
         byte[] R_previous = ww.removeFirst();
         byte[] R_pred = ww.removeFirst();
-        if (!Arrays.equals(AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, R_previous, R_pred)), this.R.get(i))) {
+        if (!Arrays.equals(AccumulatorUtils.getSha256(AccumulatorUtils.concatDigits(it, R_previous, R_pred)), this.R.get(proofIndex))) {
             return false;
         }
-        if (i == j) {
+        if (proofIndex == j) {
             return Arrays.equals(it, x);
         } else {
-            if (AccumulatorUtils.predecessor(i) >= j) {
-                return verify(AccumulatorUtils.predecessor(i), j, ww, x);
+            if (AccumulatorUtils.predecessor(proofIndex) >= j) {
+                return verify(AccumulatorUtils.predecessor(proofIndex), j, ww, x);
             } else {
-                return verify(i - 1, j, ww, x);
+                return verify(proofIndex - 1, j, ww, x);
             }
         }
     }

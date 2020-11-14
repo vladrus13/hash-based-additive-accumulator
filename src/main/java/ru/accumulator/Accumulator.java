@@ -34,5 +34,13 @@ public interface Accumulator<T> {
      */
     void clear();
 
-    boolean verify(int i, int j, LinkedList<T> w, byte[] x);
+    /**
+     * Verify proof. Return true if proof is correct and false if incorrect.
+     * @param proofIndex index of provable data
+     * @param j index of the beginning of proof
+     * @param w proof
+     * @param x provable data
+     * @return true if proof is correct, else false
+     */
+    boolean verify(int proofIndex, int j, LinkedList<T> w, byte[] x);
 }
